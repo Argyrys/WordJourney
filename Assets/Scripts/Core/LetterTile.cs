@@ -1,11 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class LetterTile : MonoBehaviour, IPointerClickHandler
 {
     [Header("References")]
-    public Text letterText;
+    public TextMeshProUGUI letterText;
     public Image backgroundImage;
 
     [Header("Colors")]
