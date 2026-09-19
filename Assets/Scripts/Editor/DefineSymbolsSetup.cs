@@ -26,12 +26,9 @@ public class DefineSymbolsSetup
             Debug.Log("Added IAP_INSTALLED define symbol");
         }
 
-        if (!defines.Contains("ADMOB_INSTALLED"))
-        {
-            defines.Add("ADMOB_INSTALLED");
-            changed = true;
-            Debug.Log("Added ADMOB_INSTALLED define symbol");
-        }
+        defines.Remove("ADMOB_INSTALLED");
+        changed = true;
+        Debug.Log("Removed ADMOB_INSTALLED (ads disabled until SDK is properly installed)");
 
         if (changed)
         {
