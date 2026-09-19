@@ -1,22 +1,13 @@
 using UnityEngine;
-
-#if IAP_INSTALLED
 using UnityEngine.Purchasing;
 using UnityEngine.Purchasing.Extension;
-#endif
 
-#if IAP_INSTALLED
 public class IAPManager : MonoBehaviour, IDetailedStoreListener
-#else
-public class IAPManager : MonoBehaviour
-#endif
 {
     public static IAPManager Instance { get; private set; }
 
-#if IAP_INSTALLED
     private IStoreController controller;
     private IExtensionProvider extensions;
-#endif
 
     private const string REMOVE_ADS = "com.wordjourney.removeads";
     private const string COINS_SMALL = "com.wordjourney.coins.small";
@@ -41,7 +32,6 @@ public class IAPManager : MonoBehaviour
 
     private void InitializePurchasing()
     {
-#if IAP_INSTALLED
         var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
 
         builder.AddProduct(REMOVE_ADS, ProductType.NonConsumable);
@@ -52,12 +42,8 @@ public class IAPManager : MonoBehaviour
         builder.AddProduct(HINTS_MEDIUM, ProductType.Consumable);
 
         UnityPurchasing.Initialize(this, builder);
-#else
-        Debug.Log("IAP SDK not installed. Enable IAP_INSTALLED define or install Unity IAP package.");
-#endif
     }
 
-#if IAP_INSTALLED
     public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
     {
         this.controller = controller;
@@ -74,11 +60,9 @@ public class IAPManager : MonoBehaviour
     {
         Debug.LogError($"IAP Initialization failed: {error} - {message}");
     }
-#endif
 
     public void BuyProduct(string productId)
     {
-#if IAP_INSTALLED
         if (controller != null)
         {
             controller.InitiatePurchase(productId);
@@ -87,12 +71,8 @@ public class IAPManager : MonoBehaviour
         {
             Debug.LogError("IAP Controller not initialized");
         }
-#else
-        Debug.Log("IAP not available - SDK not installed");
-#endif
     }
 
-#if IAP_INSTALLED
     public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args)
     {
         string productId = args.purchasedProduct.definition.id;
@@ -131,7 +111,6 @@ public class IAPManager : MonoBehaviour
     {
         Debug.LogError($"Purchase failed: {product.definition.id} - {failureReason}");
     }
-#endif
 
     private void HandleRemoveAds()
     {
@@ -162,13 +141,11 @@ public class IAPManager : MonoBehaviour
 
     public bool IsProductOwned(string productId)
     {
-#if IAP_INSTALLED
         if (controller != null)
         {
             Product product = controller.products.WithID(productId);
             return product != null && product.hasReceipt;
         }
-#endif
         return false;
     }
 
@@ -179,7 +156,6 @@ public class IAPManager : MonoBehaviour
 
     public string GetLocalizedPrice(string productId)
     {
-#if IAP_INSTALLED
         if (controller != null)
         {
             Product product = controller.products.WithID(productId);
@@ -188,7 +164,6 @@ public class IAPManager : MonoBehaviour
                 return product.metadata.localizedPriceString;
             }
         }
-#endif
         return "N/A";
     }
 }
