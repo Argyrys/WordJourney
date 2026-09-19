@@ -31,6 +31,12 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
+        Invoke(nameof(StartLevel), 0.1f);
+    }
+
+    private void StartLevel()
+    {
+        Debug.Log("StartLevel: PuzzleGrid.Instance=" + (PuzzleGrid.Instance != null) + " WordDatabase.Instance=" + (WordDatabase.Instance != null));
         LoadLevel(levelNumber);
     }
 

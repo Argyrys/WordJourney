@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using System.Collections.Generic;
 
 public class PuzzleGrid : MonoBehaviour
@@ -8,7 +9,6 @@ public class PuzzleGrid : MonoBehaviour
 
     [Header("Grid Settings")]
     public Transform gridParent;
-    public GameObject letterPrefab;
     public int gridWidth = 5;
     public int gridHeight = 4;
 
@@ -33,6 +33,13 @@ public class PuzzleGrid : MonoBehaviour
     {
         currentLevelData = levelData;
         ClearGrid();
+
+        if (gridParent == null)
+        {
+            gridParent = transform;
+        }
+
+        Debug.Log("SetupGrid called with " + levelData.gridLetters.Length + " letters, gridParent: " + gridParent.name);
         CreateGrid(levelData.gridLetters);
         WordValidator.Instance?.SetLevelWords(levelData.targetWords);
     }
@@ -42,25 +49,71 @@ public class PuzzleGrid : MonoBehaviour
         grid = new LetterTile[gridWidth, gridHeight];
         int letterIndex = 0;
 
+        float tileSize = 80f;
+        float spacing = 10f;
+        float totalWidth = gridWidth * (tileSize + spacing) - spacing;
+        float totalHeight = gridHeight * (tileSize + spacing) - spacing;
+        float startX = -totalWidth / 2f + tileSize / 2f;
+        float startY = totalHeight / 2f - tileSize / 2f;
+
         for (int y = 0; y < gridHeight; y++)
         {
             for (int x = 0; x < gridWidth; x++)
             {
                 if (letterIndex < letters.Length)
                 {
-                    GameObject tileObj = Instantiate(letterPrefab, gridParent);
-                    LetterTile tile = tileObj.GetComponent<LetterTile>();
+                    GameObject tileObj = CreateTile(letters[letterIndex], x, y);
+                    tileObj.transform.SetParent(gridParent, false);
 
+                    LetterTile tile = tileObj.GetComponent<LetterTile>();
                     if (tile != null)
                     {
                         tile.Initialize(letters[letterIndex], x, y);
                         grid[x, y] = tile;
                     }
 
+                    RectTransform rect = tileObj.GetComponent<RectTransform>();
+                    if (rect != null)
+                    {
+                        rect.anchorMin = new Vector2(0.5f, 0.5f);
+                        rect.anchorMax = new Vector2(0.5f, 0.5f);
+                        rect.anchoredPosition = new Vector2(
+                            startX + x * (tileSize + spacing),
+                            startY - y * (tileSize + spacing)
+                        );
+                        rect.sizeDelta = new Vector2(tileSize, tileSize);
+                    }
+
                     letterIndex++;
                 }
             }
         }
+    }
+
+    private GameObject CreateTile(char letter, int x, int y)
+    {
+        GameObject tileObj = new GameObject($"Tile_{x}_{y}");
+        RectTransform rect = tileObj.AddComponent<RectTransform>();
+        Image img = tileObj.AddComponent<Image>();
+        img.color = new Color(0.9f, 0.9f, 0.95f);
+
+        GameObject textObj = new GameObject("LetterText");
+        textObj.transform.SetParent(tileObj.transform, false);
+        RectTransform textRect = textObj.AddComponent<RectTransform>();
+        textRect.anchorMin = Vector2.zero;
+        textRect.anchorMax = Vector2.one;
+        textRect.sizeDelta = Vector2.zero;
+        TextMeshProUGUI tmp = textObj.AddComponent<TextMeshProUGUI>();
+        tmp.text = letter.ToString();
+        tmp.fontSize = 36;
+        tmp.alignment = TextAlignmentOptions.Center;
+        tmp.color = Color.black;
+
+        LetterTile tile = tileObj.AddComponent<LetterTile>();
+        tile.letterText = tmp;
+        tile.backgroundImage = img;
+
+        return tileObj;
     }
 
     public void OnLetterClicked(LetterTile tile)
@@ -111,7 +164,7 @@ public class PuzzleGrid : MonoBehaviour
             return;
         }
 
-        if (WordValidator.Instance.IsValidWord(currentWord))
+        if (WordValidator.Instance != null && WordValidator.Instance.IsValidWord(currentWord))
         {
             if (WordValidator.Instance.IsTargetWord(currentWord))
             {
@@ -184,9 +237,12 @@ public class PuzzleGrid : MonoBehaviour
             }
         }
 
-        foreach (Transform child in gridParent)
+        if (gridParent != null)
         {
-            Destroy(child.gameObject);
+            foreach (Transform child in gridParent)
+            {
+                Destroy(child.gameObject);
+            }
         }
     }
 

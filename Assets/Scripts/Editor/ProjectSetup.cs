@@ -76,13 +76,6 @@ public class ProjectSetup : MonoBehaviour
         gridRect.anchoredPosition = Vector2.zero;
         puzzleGrid.gridParent = gridParent.transform;
 
-        GameObject letterPrefabAsset = CreateLetterPrefab();
-        string prefabPath = "Assets/Prefabs/LetterTile.prefab";
-        PrefabUtility.SaveAsPrefabAsset(letterPrefabAsset, prefabPath);
-        GameObject letterPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
-        DestroyImmediate(letterPrefabAsset);
-        puzzleGrid.letterPrefab = letterPrefab;
-
         GameObject uiManagerObj = new GameObject("UIManager");
         UIManager uiManager = uiManagerObj.AddComponent<UIManager>();
 

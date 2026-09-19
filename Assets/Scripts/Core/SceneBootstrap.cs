@@ -9,13 +9,10 @@ public class SceneBootstrap : MonoBehaviour
         {
             GameObject managerObj = new GameObject("GameManager");
             managerObj.AddComponent<GameManager>();
+            managerObj.AddComponent<LevelManager>();
+            managerObj.AddComponent<WordValidator>();
+            managerObj.AddComponent<WordDatabase>();
             managerObj.AddComponent<AudioManager>();
         }
-    }
-
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-    static void OnAfterSceneLoad()
-    {
-        Debug.Log("WordJourney scene loaded");
     }
 }
