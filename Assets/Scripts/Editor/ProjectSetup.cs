@@ -68,12 +68,19 @@ public class ProjectSetup : MonoBehaviour
         PuzzleGrid puzzleGrid = gridObj.GetComponent<PuzzleGrid>();
 
         GameObject gridParent = new GameObject("GridParent");
-        gridParent.transform.SetParent(gridObj.transform);
+        gridParent.transform.SetParent(canvas.transform, false);
         RectTransform gridRect = gridParent.AddComponent<RectTransform>();
-        gridRect.sizeDelta = new Vector2(500, 400);
+        gridRect.anchorMin = new Vector2(0.1f, 0.25f);
+        gridRect.anchorMax = new Vector2(0.9f, 0.7f);
+        gridRect.sizeDelta = Vector2.zero;
+        gridRect.anchoredPosition = Vector2.zero;
         puzzleGrid.gridParent = gridParent.transform;
 
-        GameObject letterPrefab = CreateLetterPrefab();
+        GameObject letterPrefabAsset = CreateLetterPrefab();
+        string prefabPath = "Assets/Prefabs/LetterTile.prefab";
+        PrefabUtility.SaveAsPrefabAsset(letterPrefabAsset, prefabPath);
+        GameObject letterPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+        DestroyImmediate(letterPrefabAsset);
         puzzleGrid.letterPrefab = letterPrefab;
 
         GameObject uiManagerObj = new GameObject("UIManager");
