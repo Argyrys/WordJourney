@@ -7,6 +7,7 @@ public class IAPManager : MonoBehaviour, IDetailedStoreListener
     public static IAPManager Instance { get; private set; }
 
     private IStoreController controller;
+    private IExtensionProvider extensions;
 
     private const string REMOVE_ADS = "com.wordjourney.removeads";
     private const string COINS_SMALL = "com.wordjourney.coins.small";
@@ -43,9 +44,10 @@ public class IAPManager : MonoBehaviour, IDetailedStoreListener
         UnityPurchasing.Initialize(this, builder);
     }
 
-    public void OnInitialized(IStoreController storeController)
+    public void OnInitialized(IStoreController storeController, IExtensionProvider storeExtensions)
     {
         controller = storeController;
+        extensions = storeExtensions;
         Debug.Log("IAP Initialized");
     }
 
