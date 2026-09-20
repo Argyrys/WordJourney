@@ -73,11 +73,19 @@ public class ProjectSetup : MonoBehaviour
         GameObject gridParent = new GameObject("GridParent");
         gridParent.transform.SetParent(canvas.transform, false);
         RectTransform gridRect = gridParent.AddComponent<RectTransform>();
-        gridRect.anchorMin = new Vector2(0.1f, 0.25f);
+        gridRect.anchorMin = new Vector2(0.1f, 0.3f);
         gridRect.anchorMax = new Vector2(0.9f, 0.72f);
         gridRect.sizeDelta = Vector2.zero;
         gridRect.anchoredPosition = Vector2.zero;
         puzzleGrid.gridParent = gridParent.transform;
+
+        GameObject wordListParent = new GameObject("WordListParent");
+        wordListParent.transform.SetParent(canvas.transform, false);
+        RectTransform wlRect = wordListParent.AddComponent<RectTransform>();
+        wlRect.anchorMin = new Vector2(0.05f, 0.08f);
+        wlRect.anchorMax = new Vector2(0.95f, 0.22f);
+        wlRect.sizeDelta = Vector2.zero;
+        wlRect.anchoredPosition = Vector2.zero;
 
         GameObject uiManagerObj = new GameObject("UIManager");
         UIManager uiManager = uiManagerObj.AddComponent<UIManager>();
@@ -108,6 +116,7 @@ public class ProjectSetup : MonoBehaviour
         uiManager.submitButton = submitButton.GetComponent<Button>();
         uiManager.hintButton = hintButton.GetComponent<Button>();
         uiManager.shuffleButton = shuffleButton.GetComponent<Button>();
+        uiManager.wordListParent = wordListParent.transform;
 
         GameObject levelCompletePanel = CreatePanel(canvas.transform, "LevelCompletePanel", new Vector2(600, 400));
         uiManager.levelCompletePanel = levelCompletePanel;
@@ -134,23 +143,29 @@ public class ProjectSetup : MonoBehaviour
         Camera mainCam = Camera.main;
         if (mainCam != null)
         {
+            mainCam.clearFlags = CameraClearFlags.SolidColor;
             mainCam.backgroundColor = color;
         }
 
-        GameObject bg = new GameObject("Background");
-        RectTransform rect = bg.AddComponent<RectTransform>();
-        rect.anchorMin = Vector2.zero;
-        rect.anchorMax = Vector2.one;
-        rect.sizeDelta = Vector2.zero;
+        RenderSettings.ambientLight = color;
+        RenderSettings.skybox = null;
+
         Canvas canvas = Object.FindObjectOfType<Canvas>();
         if (canvas != null)
         {
+            GameObject bg = new GameObject("Background");
+            RectTransform rect = bg.AddComponent<RectTransform>();
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            rect.sizeDelta = Vector2.zero;
+            rect.anchoredPosition = Vector2.zero;
             bg.transform.SetParent(canvas.transform, false);
             bg.transform.SetAsFirstSibling();
+            Image img = bg.AddComponent<Image>();
+            img.color = color;
+            return bg;
         }
-        Image img = bg.AddComponent<Image>();
-        img.color = color;
-        return bg;
+        return null;
     }
 
     static GameObject CreateCanvas(string name)

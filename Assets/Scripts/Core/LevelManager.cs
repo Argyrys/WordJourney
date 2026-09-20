@@ -7,9 +7,7 @@ public class LevelManager : MonoBehaviour
 
     [Header("Level Settings")]
     public int levelNumber = 1;
-    public int targetScore = 1000;
     public int timeLimit = 120;
-    public int wordsToFind = 5;
 
     private LevelData currentLevelData;
     private List<string> foundWords = new List<string>();
@@ -36,7 +34,6 @@ public class LevelManager : MonoBehaviour
 
     private void StartLevel()
     {
-        Debug.Log("StartLevel: PuzzleGrid.Instance=" + (PuzzleGrid.Instance != null) + " WordDatabase.Instance=" + (WordDatabase.Instance != null));
         LoadLevel(levelNumber);
     }
 
@@ -75,7 +72,7 @@ public class LevelManager : MonoBehaviour
             int wordScore = CalculateWordScore(word);
             currentScore += wordScore;
 
-            UIManager.Instance?.WordFound(word, wordScore);
+            UIManager.Instance?.WordFound(word, currentScore);
             UIManager.Instance?.UpdateProgress(foundWords.Count, currentLevelData.targetWords.Count);
 
             if (foundWords.Count >= currentLevelData.targetWords.Count)
@@ -100,6 +97,16 @@ public class LevelManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public List<string> GetTargetWords()
+    {
+        return currentLevelData?.targetWords ?? new List<string>();
+    }
+
+    public List<string> GetFoundWords()
+    {
+        return foundWords;
     }
 
     private int CalculateWordScore(string word)
@@ -153,28 +160,48 @@ public class LevelManager : MonoBehaviour
 
     private char[] GenerateGridLetters(List<string> words)
     {
-        HashSet<char> letters = new HashSet<char>();
+        Dictionary<char, int> letterCount = new Dictionary<char, int>();
+
         foreach (string word in words)
         {
+            Dictionary<char, int> wordLetters = new Dictionary<char, int>();
             foreach (char c in word)
             {
-                letters.Add(char.ToUpper(c));
+                char upper = char.ToUpper(c);
+                wordLetters[upper] = wordLetters.ContainsKey(upper) ? wordLetters[upper] + 1 : 1;
+            }
+
+            foreach (var kvp in wordLetters)
+            {
+                int needed = kvp.Value;
+                int current = letterCount.ContainsKey(kvp.Key) ? letterCount[kvp.Key] : 0;
+                letterCount[kvp.Key] = Mathf.Max(needed, current);
             }
         }
 
-        while (letters.Count < 20)
+        List<char> result = new List<char>();
+        foreach (var kvp in letterCount)
         {
-            letters.Add((char)Random.Range('A', 'Z' + 1));
+            for (int i = 0; i < kvp.Value; i++)
+            {
+                result.Add(kvp.Key);
+            }
         }
 
-        List<char> letterList = new List<char>(letters);
-        for (int i = letterList.Count - 1; i > 0; i--)
+        int targetCount = 20;
+        while (result.Count < targetCount)
+        {
+            char randomLetter = (char)Random.Range('A', 'Z' + 1);
+            result.Add(randomLetter);
+        }
+
+        for (int i = result.Count - 1; i > 0; i--)
         {
             int j = Random.Range(0, i + 1);
-            (letterList[i], letterList[j]) = (letterList[j], letterList[i]);
+            (result[i], result[j]) = (result[j], result[i]);
         }
 
-        return letterList.ToArray();
+        return result.ToArray();
     }
 }
 
@@ -186,5 +213,4 @@ public class LevelData
     public List<string> targetWords;
     public char[] gridLetters;
     public int timeLimit = 120;
-    public int targetScore = 1000;
 }

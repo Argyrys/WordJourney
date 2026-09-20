@@ -44,6 +44,10 @@ public class UIManager : MonoBehaviour
     public GameObject messagePanel;
     public TextMeshProUGUI messageText;
 
+    [Header("Word List")]
+    public Transform wordListParent;
+    public List<TextMeshProUGUI> wordSlotTexts = new List<TextMeshProUGUI>();
+
     private void Awake()
     {
         if (Instance == null)
@@ -77,6 +81,85 @@ public class UIManager : MonoBehaviour
         levelText.text = $"Level {level}";
         wordsFoundText.text = $"0/{totalWords}";
         scoreText.text = "0";
+        PopulateWordList();
+    }
+
+    private void PopulateWordList()
+    {
+        if (wordListParent == null) return;
+
+        foreach (Transform child in wordListParent)
+            Destroy(child.gameObject);
+        wordSlotTexts.Clear();
+
+        List<string> targets = LevelManager.Instance?.GetTargetWords();
+        if (targets == null) return;
+
+        float slotWidth = 140f;
+        float spacing = 15f;
+        float totalWidth = targets.Count * (slotWidth + spacing) - spacing;
+        float startX = -totalWidth / 2f + slotWidth / 2f;
+
+        for (int i = 0; i < targets.Count; i++)
+        {
+            int len = targets[i].Length;
+            GameObject slot = new GameObject($"WordSlot_{i}");
+            slot.transform.SetParent(wordListParent, false);
+
+            RectTransform slotRect = slot.AddComponent<RectTransform>();
+            slotRect.anchorMin = new Vector2(0.5f, 0.5f);
+            slotRect.anchorMax = new Vector2(0.5f, 0.5f);
+            slotRect.anchoredPosition = new Vector2(startX + i * (slotWidth + spacing), 0);
+            slotRect.sizeDelta = new Vector2(slotWidth, 50);
+
+            Image slotBg = slot.AddComponent<Image>();
+            slotBg.color = new Color(0.2f, 0.22f, 0.32f);
+
+            GameObject textObj = new GameObject("Text");
+            textObj.transform.SetParent(slot.transform, false);
+            RectTransform textRect = textObj.AddComponent<RectTransform>();
+            textRect.anchorMin = Vector2.zero;
+            textRect.anchorMax = Vector2.one;
+            textRect.sizeDelta = Vector2.zero;
+            TextMeshProUGUI tmp = textObj.AddComponent<TextMeshProUGUI>();
+
+            string underscores = new string('_', len);
+            tmp.text = underscores;
+            tmp.fontSize = 28;
+            tmp.fontStyle = FontStyles.Bold;
+            tmp.alignment = TextAlignmentOptions.Center;
+            tmp.color = new Color(0.4f, 0.42f, 0.5f);
+
+            wordSlotTexts.Add(tmp);
+        }
+    }
+
+    public void UpdateWordSlot(string word)
+    {
+        if (wordSlotTexts == null) return;
+
+        List<string> found = LevelManager.Instance?.GetFoundWords();
+        List<string> targets = LevelManager.Instance?.GetTargetWords();
+        if (found == null || targets == null) return;
+
+        for (int i = 0; i < targets.Count; i++)
+        {
+            if (i < wordSlotTexts.Count)
+            {
+                if (found.Contains(targets[i]))
+                {
+                    wordSlotTexts[i].text = targets[i];
+                    wordSlotTexts[i].color = new Color(0.3f, 0.85f, 0.4f);
+                    wordSlotTexts[i].transform.parent.GetComponent<Image>().color =
+                        new Color(0.15f, 0.35f, 0.2f);
+                }
+                else
+                {
+                    wordSlotTexts[i].text = new string('_', targets[i].Length);
+                    wordSlotTexts[i].color = new Color(0.4f, 0.42f, 0.5f);
+                }
+            }
+        }
     }
 
     public void UpdateTimer(float time)
@@ -148,6 +231,7 @@ public class UIManager : MonoBehaviour
     {
         ShowMessage($"+{score} - {word}!");
         UpdateScore(score);
+        UpdateWordSlot(word);
     }
 
     public void ShowLevelComplete(int stars, int coinsEarned)
