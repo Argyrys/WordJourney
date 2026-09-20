@@ -13,6 +13,7 @@ public class SceneBootstrap : MonoBehaviour
             managerObj.AddComponent<WordValidator>();
             managerObj.AddComponent<WordDatabase>();
             managerObj.AddComponent<AudioManager>();
+            managerObj.AddComponent<AdsManager>();
         }
     }
 }

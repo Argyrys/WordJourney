@@ -56,6 +56,7 @@ public class LevelManager : MonoBehaviour
         isLevelActive = true;
 
         UIManager.Instance?.UpdateLevelInfo(levelNumber, currentLevelData.targetWords.Count);
+        WordValidator.Instance?.SetLevelWords(currentLevelData.targetWords);
 
         CircularLetterWheel.Instance?.SetupWheel(currentLevelData.gridLetters);
         CrosswordDisplay.Instance?.SetupWords(currentLevelData.targetWords);

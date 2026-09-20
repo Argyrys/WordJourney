@@ -29,10 +29,10 @@ public class MenuManager : MonoBehaviour
 
     private void Start()
     {
-        mainMenuPanel.SetActive(true);
-        levelSelectPanel.SetActive(false);
-        shopPanel.SetActive(false);
-        settingsPanel.SetActive(false);
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
+        if (levelSelectPanel != null) levelSelectPanel.SetActive(false);
+        if (shopPanel != null) shopPanel.SetActive(false);
+        if (settingsPanel != null) settingsPanel.SetActive(false);
 
         SetupButtons();
         UpdateMainMenuUI();
@@ -64,34 +64,36 @@ public class MenuManager : MonoBehaviour
 
     private void OnLevelsClicked()
     {
-        mainMenuPanel.SetActive(false);
-        levelSelectPanel.SetActive(true);
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
+        if (levelSelectPanel != null) levelSelectPanel.SetActive(true);
         PopulateLevelSelect();
     }
 
     private void OnShopClicked()
     {
-        mainMenuPanel.SetActive(false);
-        shopPanel.SetActive(true);
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
+        if (shopPanel != null) shopPanel.SetActive(true);
     }
 
     private void OnSettingsClicked()
     {
-        mainMenuPanel.SetActive(false);
-        settingsPanel.SetActive(true);
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
+        if (settingsPanel != null) settingsPanel.SetActive(true);
     }
 
     public void BackToMainMenu()
     {
-        mainMenuPanel.SetActive(true);
-        levelSelectPanel.SetActive(false);
-        shopPanel.SetActive(false);
-        settingsPanel.SetActive(false);
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
+        if (levelSelectPanel != null) levelSelectPanel.SetActive(false);
+        if (shopPanel != null) shopPanel.SetActive(false);
+        if (settingsPanel != null) settingsPanel.SetActive(false);
         UpdateMainMenuUI();
     }
 
     private void PopulateLevelSelect()
     {
+        if (levelButtonParent == null) return;
+
         foreach (Transform child in levelButtonParent)
         {
             Destroy(child.gameObject);
@@ -100,6 +102,8 @@ public class MenuManager : MonoBehaviour
         int maxLevel = GameManager.Instance.GetMaxLevel();
         int startLevel = currentPage * levelsPerPage + 1;
         int endLevel = Mathf.Min(startLevel + levelsPerPage, 100);
+
+        if (levelButtonPrefab == null) return;
 
         for (int i = startLevel; i <= endLevel; i++)
         {
