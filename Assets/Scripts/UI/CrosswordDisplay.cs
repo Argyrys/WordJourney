@@ -26,14 +26,30 @@ public class CrosswordDisplay : MonoBehaviour
     {
         ClearWords();
 
-        float slotWidth = 160f;
-        float slotHeight = 80f;
-        float spacingX = 15f;
-        float spacingY = 18f;
+        if (wordContainer == null) return;
+
+        float containerWidth = wordContainer.rect.width;
+        float containerHeight = wordContainer.rect.height;
+
+        if (containerWidth <= 0) containerWidth = 900f;
+        if (containerHeight <= 0) containerHeight = 400f;
+
+        float padding = 20f;
+        float availableWidth = containerWidth - padding * 2;
+        float availableHeight = containerHeight - padding * 2;
 
         int maxPerRow = Mathf.CeilToInt(targetWords.Count / 2f);
-        float totalWidth = maxPerRow * (slotWidth + spacingX) - spacingX;
-        float totalHeight = 2 * (slotHeight + spacingY) - spacingY;
+        int rows = targetWords.Count <= maxPerRow ? 1 : 2;
+
+        float slotHeight = Mathf.Min(availableHeight / rows - 10f, 90f);
+        float spacingX = 12f;
+        float spacingY = 15f;
+        float slotWidth = (availableWidth - spacingX * (maxPerRow - 1)) / maxPerRow;
+
+        slotWidth = Mathf.Min(slotWidth, 200f);
+
+        float totalWidth = maxPerRow * slotWidth + (maxPerRow - 1) * spacingX;
+        float totalHeight = rows * slotHeight + (rows - 1) * spacingY;
 
         for (int i = 0; i < targetWords.Count; i++)
         {

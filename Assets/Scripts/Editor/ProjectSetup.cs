@@ -131,28 +131,28 @@ public class ProjectSetup : MonoBehaviour
         GameObject wheelObj = new GameObject("LetterWheel");
         wheelObj.transform.SetParent(canvas.transform, false);
         RectTransform wheelRect = wheelObj.AddComponent<RectTransform>();
-        wheelRect.anchorMin = new Vector2(0.5f, 0.06f);
-        wheelRect.anchorMax = new Vector2(0.5f, 0.34f);
+        wheelRect.anchorMin = new Vector2(0.5f, 0.02f);
+        wheelRect.anchorMax = new Vector2(0.5f, 0.30f);
         wheelRect.sizeDelta = Vector2.zero;
         wheelRect.anchoredPosition = Vector2.zero;
         wheelObj.AddComponent<CircularLetterWheel>();
         CircularLetterWheel wheel = wheelObj.GetComponent<CircularLetterWheel>();
         wheel.wheelCenter = wheelRect;
-        wheel.wheelRadius = 140f;
-        wheel.letterSize = 65f;
+        wheel.wheelRadius = 130f;
+        wheel.letterSize = 60f;
 
         GameObject wheelBg = new GameObject("WheelBackground");
         wheelBg.transform.SetParent(wheelObj.transform, false);
         RectTransform wbRect = wheelBg.AddComponent<RectTransform>();
         wbRect.anchorMin = new Vector2(0.5f, 0.5f);
         wbRect.anchorMax = new Vector2(0.5f, 0.5f);
-        wbRect.sizeDelta = new Vector2(360, 360);
+        wbRect.sizeDelta = new Vector2(320, 320);
         Image wbImg = wheelBg.AddComponent<Image>();
         wbImg.color = new Color(0.05f, 0.35f, 0.4f, 0.6f);
         wheelBg.transform.SetAsFirstSibling();
 
-        GameObject hintBtn = CreateButton(canvas.transform, "HintButton", "HINT", new Vector2(-100, 60), new Color(1f, 0.75f, 0.2f), 140, 55, new Vector2(0.5f, 0), new Vector2(0.5f, 0));
-        GameObject shuffleBtn = CreateButton(canvas.transform, "ShuffleButton", "SHUFFLE", new Vector2(100, 60), new Color(0.55f, 0.55f, 0.65f), 140, 55, new Vector2(0.5f, 0), new Vector2(0.5f, 0));
+        GameObject hintBtn = CreateButton(canvas.transform, "HintButton", "HINT", new Vector2(-100, 20), new Color(1f, 0.75f, 0.2f), 140, 55, new Vector2(0.5f, 0), new Vector2(0.5f, 0));
+        GameObject shuffleBtn = CreateButton(canvas.transform, "ShuffleButton", "SHUFFLE", new Vector2(100, 20), new Color(0.55f, 0.55f, 0.65f), 140, 55, new Vector2(0.5f, 0), new Vector2(0.5f, 0));
 
         uiManager.hintButton = hintBtn.GetComponent<Button>();
         uiManager.shuffleButton = shuffleBtn.GetComponent<Button>();
