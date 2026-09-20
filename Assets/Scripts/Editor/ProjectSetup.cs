@@ -90,12 +90,12 @@ public class ProjectSetup : MonoBehaviour
         uiManager.coinsText = coinsT.GetComponent<TextMeshProUGUI>();
         uiManager.heartsText = heartsT.GetComponent<TextMeshProUGUI>();
 
-        GameObject progressBg = CreatePanel(canvas.transform, "ProgressBg", new Vector2(900, 16));
+        GameObject progressBg = CreatePanel(canvas.transform, "ProgressBg", new Vector2(1000, 20));
         RectTransform pBgRect = progressBg.GetComponent<RectTransform>();
         pBgRect.anchorMin = new Vector2(0.5f, 1);
         pBgRect.anchorMax = new Vector2(0.5f, 1);
         pBgRect.anchoredPosition = new Vector2(0, -135);
-        pBgRect.sizeDelta = new Vector2(900, 16);
+        pBgRect.sizeDelta = new Vector2(1000, 20);
         progressBg.GetComponent<Image>().color = new Color(0.05f, 0.3f, 0.35f);
 
         GameObject progressFill = new GameObject("ProgressFill");
@@ -103,7 +103,7 @@ public class ProjectSetup : MonoBehaviour
         RectTransform pFillRect = progressFill.AddComponent<RectTransform>();
         pFillRect.anchorMin = Vector2.zero;
         pFillRect.anchorMax = new Vector2(0, 1);
-        pFillRect.sizeDelta = new Vector2(900, 0);
+        pFillRect.sizeDelta = new Vector2(1000, 0);
         Image fillImg = progressFill.AddComponent<Image>();
         fillImg.color = new Color(0.2f, 0.85f, 0.5f);
         fillImg.type = Image.Type.Filled;
@@ -116,23 +116,23 @@ public class ProjectSetup : MonoBehaviour
         GameObject crosswordObj = new GameObject("CrosswordDisplay");
         crosswordObj.transform.SetParent(canvas.transform, false);
         RectTransform cwRect = crosswordObj.AddComponent<RectTransform>();
-        cwRect.anchorMin = new Vector2(0.05f, 0.62f);
-        cwRect.anchorMax = new Vector2(0.95f, 0.78f);
+        cwRect.anchorMin = new Vector2(0.05f, 0.58f);
+        cwRect.anchorMax = new Vector2(0.95f, 0.82f);
         cwRect.sizeDelta = Vector2.zero;
         cwRect.anchoredPosition = Vector2.zero;
         crosswordObj.AddComponent<CrosswordDisplay>();
         CrosswordDisplay crossword = crosswordObj.GetComponent<CrosswordDisplay>();
         crossword.wordContainer = cwRect;
 
-        GameObject wordDisplay = CreateText(canvas.transform, "CurrentWordText", "", 44, new Vector2(0, 340));
+        GameObject wordDisplay = CreateText(canvas.transform, "CurrentWordText", "", 48, new Vector2(0, 380));
         uiManager.currentWordText = wordDisplay.GetComponent<TextMeshProUGUI>();
         wordDisplay.GetComponent<TextMeshProUGUI>().fontStyle = FontStyles.Bold;
 
         GameObject wheelObj = new GameObject("LetterWheel");
         wheelObj.transform.SetParent(canvas.transform, false);
         RectTransform wheelRect = wheelObj.AddComponent<RectTransform>();
-        wheelRect.anchorMin = new Vector2(0.5f, 0.08f);
-        wheelRect.anchorMax = new Vector2(0.5f, 0.38f);
+        wheelRect.anchorMin = new Vector2(0.5f, 0.06f);
+        wheelRect.anchorMax = new Vector2(0.5f, 0.34f);
         wheelRect.sizeDelta = Vector2.zero;
         wheelRect.anchoredPosition = Vector2.zero;
         wheelObj.AddComponent<CircularLetterWheel>();
@@ -151,8 +151,8 @@ public class ProjectSetup : MonoBehaviour
         wbImg.color = new Color(0.05f, 0.35f, 0.4f, 0.6f);
         wheelBg.transform.SetAsFirstSibling();
 
-        GameObject hintBtn = CreateButton(canvas.transform, "HintButton", "HINT", new Vector2(-250, -180), new Color(1f, 0.75f, 0.2f), 140, 55);
-        GameObject shuffleBtn = CreateButton(canvas.transform, "ShuffleButton", "SHUFFLE", new Vector2(250, -180), new Color(0.55f, 0.55f, 0.65f), 140, 55);
+        GameObject hintBtn = CreateButton(canvas.transform, "HintButton", "HINT", new Vector2(-160, -340), new Color(1f, 0.75f, 0.2f), 140, 55);
+        GameObject shuffleBtn = CreateButton(canvas.transform, "ShuffleButton", "SHUFFLE", new Vector2(160, -340), new Color(0.55f, 0.55f, 0.65f), 140, 55);
 
         uiManager.hintButton = hintBtn.GetComponent<Button>();
         uiManager.shuffleButton = shuffleBtn.GetComponent<Button>();

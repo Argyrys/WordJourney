@@ -26,10 +26,10 @@ public class CrosswordDisplay : MonoBehaviour
     {
         ClearWords();
 
-        float slotWidth = 120f;
-        float slotHeight = 60f;
-        float spacingX = 12f;
-        float spacingY = 14f;
+        float slotWidth = 160f;
+        float slotHeight = 80f;
+        float spacingX = 15f;
+        float spacingY = 18f;
 
         int maxPerRow = Mathf.CeilToInt(targetWords.Count / 2f);
         float totalWidth = maxPerRow * (slotWidth + spacingX) - spacingX;
@@ -71,7 +71,7 @@ public class CrosswordDisplay : MonoBehaviour
 
         TextMeshProUGUI tmp = textObj.AddComponent<TextMeshProUGUI>();
         tmp.text = new string('_', word.Length);
-        tmp.fontSize = 26;
+        tmp.fontSize = 32;
         tmp.fontStyle = FontStyles.Bold;
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.color = emptyTextColor;
