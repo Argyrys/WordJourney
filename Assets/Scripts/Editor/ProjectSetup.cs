@@ -151,8 +151,8 @@ public class ProjectSetup : MonoBehaviour
         wbImg.color = new Color(0.05f, 0.35f, 0.4f, 0.6f);
         wheelBg.transform.SetAsFirstSibling();
 
-        GameObject hintBtn = CreateButton(wheelObj.transform, "HintButton", "HINT", new Vector2(-200, -180), new Color(1f, 0.75f, 0.2f), 120, 50);
-        GameObject shuffleBtn = CreateButton(wheelObj.transform, "ShuffleButton", "SHUFFLE", new Vector2(200, -180), new Color(0.55f, 0.55f, 0.65f), 120, 50);
+        GameObject hintBtn = CreateButton(canvas.transform, "HintButton", "HINT", new Vector2(0, 0), new Color(1f, 0.75f, 0.2f), 120, 50, new Vector2(0, 0.20f), new Vector2(0, 0.20f));
+        GameObject shuffleBtn = CreateButton(canvas.transform, "ShuffleButton", "SHUFFLE", new Vector2(0, 0), new Color(0.55f, 0.55f, 0.65f), 120, 50, new Vector2(1, 0.20f), new Vector2(1, 0.20f));
 
         uiManager.hintButton = hintBtn.GetComponent<Button>();
         uiManager.shuffleButton = shuffleBtn.GetComponent<Button>();
