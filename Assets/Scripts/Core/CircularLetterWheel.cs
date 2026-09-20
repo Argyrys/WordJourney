@@ -16,14 +16,14 @@ public class CircularLetterWheel : MonoBehaviour, IPointerDownHandler, IDragHand
     [Header("Colors")]
     public Color[] letterColors = new Color[]
     {
-        new Color(0.15f, 0.68f, 0.38f),
-        new Color(0.85f, 0.25f, 0.45f),
-        new Color(0.2f, 0.5f, 0.95f),
-        new Color(0.95f, 0.72f, 0.15f),
-        new Color(0.65f, 0.28f, 0.85f),
-        new Color(0.15f, 0.78f, 0.82f),
-        new Color(0.9f, 0.42f, 0.18f),
-        new Color(0.45f, 0.8f, 0.28f)
+        new Color(0.20f, 0.75f, 0.35f),
+        new Color(0.90f, 0.75f, 0.15f),
+        new Color(0.20f, 0.50f, 0.95f),
+        new Color(0.90f, 0.25f, 0.40f),
+        new Color(0.60f, 0.30f, 0.85f),
+        new Color(0.15f, 0.80f, 0.80f),
+        new Color(0.95f, 0.50f, 0.20f),
+        new Color(0.40f, 0.80f, 0.30f)
     };
 
     [Header("Selection Line")]

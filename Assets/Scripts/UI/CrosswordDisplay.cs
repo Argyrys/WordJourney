@@ -10,9 +10,9 @@ public class CrosswordDisplay : MonoBehaviour
     public RectTransform wordContainer;
 
     [Header("Colors")]
-    public Color emptySlotColor = new Color(0.08f, 0.15f, 0.25f, 0.95f);
-    public Color foundWordColor = new Color(0.2f, 0.82f, 0.48f);
-    public Color emptyTextColor = new Color(0.4f, 0.55f, 0.65f);
+    public Color emptySlotColor = new Color(0.06f, 0.12f, 0.22f, 0.92f);
+    public Color foundWordColor = new Color(0.30f, 0.75f, 0.35f);
+    public Color emptyTextColor = new Color(0.55f, 0.68f, 0.78f);
     public Color foundTextColor = Color.white;
 
     private List<WordSlot> wordSlots = new List<WordSlot>();
@@ -32,35 +32,51 @@ public class CrosswordDisplay : MonoBehaviour
         float containerHeight = wordContainer.rect.height;
 
         if (containerWidth <= 0) containerWidth = 900f;
-        if (containerHeight <= 0) containerHeight = 400f;
+        if (containerHeight <= 0) containerHeight = 500f;
 
-        float padding = 20f;
-        float availableWidth = containerWidth - padding * 2;
-        float availableHeight = containerHeight - padding * 2;
+        float paddingX = 10f;
+        float paddingY = 10f;
+        float availableWidth = containerWidth - paddingX * 2;
+        float availableHeight = containerHeight - paddingY * 2;
 
-        int maxPerRow = Mathf.CeilToInt(targetWords.Count / 2f);
-        int rows = targetWords.Count <= maxPerRow ? 1 : 2;
+        int leftCount = Mathf.CeilToInt(targetWords.Count / 2f);
+        int rightCount = targetWords.Count - leftCount;
 
-        float slotHeight = Mathf.Min(availableHeight / rows - 10f, 90f);
-        float spacingX = 12f;
-        float spacingY = 15f;
-        float slotWidth = (availableWidth - spacingX * (maxPerRow - 1)) / maxPerRow;
+        float rowHeight = Mathf.Min(availableHeight / Mathf.Max(leftCount, rightCount) - 8f, 60f);
+        float spacingY = 8f;
+        float colGap = 30f;
 
-        slotWidth = Mathf.Min(slotWidth, 200f);
+        float maxCharPerSlot = 0;
+        foreach (string w in targetWords)
+            if (w.Length > maxCharPerSlot) maxCharPerSlot = w.Length;
 
-        float totalWidth = maxPerRow * slotWidth + (maxPerRow - 1) * spacingX;
-        float totalHeight = rows * slotHeight + (rows - 1) * spacingY;
+        float maxSlotWidth = (availableWidth - colGap) / 2f;
+        float charWidth = maxSlotWidth / (maxCharPerSlot + 1f);
+        charWidth = Mathf.Min(charWidth, 42f);
+
+        float leftColX = -availableWidth / 4f - colGap / 4f;
+        float rightColX = availableWidth / 4f + colGap / 4f;
+
+        float totalHeight = leftCount * rowHeight + (leftCount - 1) * spacingY;
+        float startY = totalHeight / 2f - rowHeight / 2f;
 
         for (int i = 0; i < targetWords.Count; i++)
         {
             string word = targetWords[i];
-            int row = i < maxPerRow ? 0 : 1;
-            int col = row == 0 ? i : i - maxPerRow;
+            bool isLeft = i % 2 == 0;
+            int row = i / 2;
 
-            float x = -totalWidth / 2f + col * (slotWidth + spacingX) + slotWidth / 2f;
-            float y = totalHeight / 2f - row * (slotHeight + spacingY) - slotHeight / 2f;
+            float slotWidth = (word.Length + 1) * charWidth;
+            slotWidth = Mathf.Max(slotWidth, 80f);
+            slotWidth = Mathf.Min(slotWidth, maxSlotWidth);
 
-            CreateWordSlot(word, new Vector2(x, y), slotWidth, slotHeight);
+            float x = isLeft ? leftColX : rightColX;
+            float y = startY - row * (rowHeight + spacingY);
+
+            float stagger = isLeft ? 0f : rowHeight * 0.4f;
+            y -= stagger;
+
+            CreateWordSlot(word, new Vector2(x, y), slotWidth, rowHeight);
         }
     }
 
@@ -80,10 +96,10 @@ public class CrosswordDisplay : MonoBehaviour
         RectTransform sRect = shadowObj.AddComponent<RectTransform>();
         sRect.anchorMin = Vector2.zero;
         sRect.anchorMax = Vector2.one;
-        sRect.sizeDelta = new Vector2(3, -3);
-        sRect.anchoredPosition = new Vector2(2, -2);
+        sRect.sizeDelta = new Vector2(2, -2);
+        sRect.anchoredPosition = new Vector2(1, -1);
         Image sImg = shadowObj.AddComponent<Image>();
-        sImg.color = new Color(0, 0, 0, 0.25f);
+        sImg.color = new Color(0, 0, 0, 0.2f);
         shadowObj.transform.SetAsFirstSibling();
 
         Image bg = slotObj.AddComponent<Image>();
@@ -98,10 +114,11 @@ public class CrosswordDisplay : MonoBehaviour
 
         TextMeshProUGUI tmp = textObj.AddComponent<TextMeshProUGUI>();
         tmp.text = new string('_', word.Length);
-        tmp.fontSize = 42;
+        tmp.fontSize = 28;
         tmp.fontStyle = FontStyles.Bold;
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.color = emptyTextColor;
+        tmp.characterSpacing = 6;
 
         WordSlot slot = new WordSlot
         {
