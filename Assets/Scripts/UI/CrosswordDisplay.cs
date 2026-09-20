@@ -10,9 +10,9 @@ public class CrosswordDisplay : MonoBehaviour
     public RectTransform wordContainer;
 
     [Header("Colors")]
-    public Color emptySlotColor = new Color(0.15f, 0.25f, 0.35f, 0.8f);
+    public Color emptySlotColor = new Color(0.12f, 0.18f, 0.28f, 0.9f);
     public Color foundWordColor = new Color(0.2f, 0.8f, 0.5f);
-    public Color emptyTextColor = new Color(0.4f, 0.55f, 0.65f);
+    public Color emptyTextColor = new Color(0.5f, 0.65f, 0.75f);
     public Color foundTextColor = Color.white;
 
     private List<WordSlot> wordSlots = new List<WordSlot>();
@@ -26,10 +26,10 @@ public class CrosswordDisplay : MonoBehaviour
     {
         ClearWords();
 
-        float slotWidth = 80f;
-        float slotHeight = 50f;
-        float spacingX = 8f;
-        float spacingY = 10f;
+        float slotWidth = 120f;
+        float slotHeight = 60f;
+        float spacingX = 12f;
+        float spacingY = 14f;
 
         int maxPerRow = Mathf.CeilToInt(targetWords.Count / 2f);
         float totalWidth = maxPerRow * (slotWidth + spacingX) - spacingX;
@@ -71,7 +71,7 @@ public class CrosswordDisplay : MonoBehaviour
 
         TextMeshProUGUI tmp = textObj.AddComponent<TextMeshProUGUI>();
         tmp.text = new string('_', word.Length);
-        tmp.fontSize = 22;
+        tmp.fontSize = 26;
         tmp.fontStyle = FontStyles.Bold;
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.color = emptyTextColor;
