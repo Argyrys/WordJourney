@@ -71,7 +71,7 @@ public class CrosswordDisplay : MonoBehaviour
 
         TextMeshProUGUI tmp = textObj.AddComponent<TextMeshProUGUI>();
         tmp.text = new string('_', word.Length);
-        tmp.fontSize = 32;
+        tmp.fontSize = 40;
         tmp.fontStyle = FontStyles.Bold;
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.color = emptyTextColor;
@@ -106,7 +106,7 @@ public class CrosswordDisplay : MonoBehaviour
         foreach (WordSlot slot in wordSlots)
         {
             if (slot.background != null)
-                Destroy(slot.background.transform.parent.gameObject);
+                Destroy(slot.background.gameObject);
         }
         wordSlots.Clear();
     }

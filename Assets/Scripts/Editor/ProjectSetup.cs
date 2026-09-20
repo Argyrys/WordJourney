@@ -151,8 +151,8 @@ public class ProjectSetup : MonoBehaviour
         wbImg.color = new Color(0.05f, 0.35f, 0.4f, 0.6f);
         wheelBg.transform.SetAsFirstSibling();
 
-        GameObject hintBtn = CreateButton(canvas.transform, "HintButton", "HINT", new Vector2(-160, -340), new Color(1f, 0.75f, 0.2f), 140, 55);
-        GameObject shuffleBtn = CreateButton(canvas.transform, "ShuffleButton", "SHUFFLE", new Vector2(160, -340), new Color(0.55f, 0.55f, 0.65f), 140, 55);
+        GameObject hintBtn = CreateButton(canvas.transform, "HintButton", "HINT", new Vector2(-100, 60), new Color(1f, 0.75f, 0.2f), 140, 55, new Vector2(0.5f, 0), new Vector2(0.5f, 0));
+        GameObject shuffleBtn = CreateButton(canvas.transform, "ShuffleButton", "SHUFFLE", new Vector2(100, 60), new Color(0.55f, 0.55f, 0.65f), 140, 55, new Vector2(0.5f, 0), new Vector2(0.5f, 0));
 
         uiManager.hintButton = hintBtn.GetComponent<Button>();
         uiManager.shuffleButton = shuffleBtn.GetComponent<Button>();
@@ -229,11 +229,13 @@ public class ProjectSetup : MonoBehaviour
         return textObj;
     }
 
-    static GameObject CreateButton(Transform parent, string name, string label, Vector2 position, Color bgColor, float width = 280, float height = 65)
+    static GameObject CreateButton(Transform parent, string name, string label, Vector2 position, Color bgColor, float width = 280, float height = 65, Vector2? anchorMin = null, Vector2? anchorMax = null)
     {
         GameObject btnObj = new GameObject(name);
         btnObj.transform.SetParent(parent, false);
         RectTransform rect = btnObj.AddComponent<RectTransform>();
+        if (anchorMin.HasValue) rect.anchorMin = anchorMin.Value;
+        if (anchorMax.HasValue) rect.anchorMax = anchorMax.Value;
         rect.anchoredPosition = position;
         rect.sizeDelta = new Vector2(width, height);
         Image img = btnObj.AddComponent<Image>();
