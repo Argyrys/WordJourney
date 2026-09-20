@@ -19,29 +19,29 @@ public class ProjectSetup : MonoBehaviour
     static void CreateMenuScene()
     {
         var scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
-
-        GameObject bg = CreateBackground(scene, new Color(0.12f, 0.14f, 0.22f));
         GameObject canvas = CreateCanvas("MainCanvas");
+
+        CreateBackground(canvas, new Color(0.08f, 0.55f, 0.6f));
 
         GameObject managerObj = new GameObject("MenuManager");
         managerObj.AddComponent<MenuManager>();
         managerObj.AddComponent<AudioManager>();
 
-        CreateText(canvas.transform, "TitleText", "WORD", 72, new Vector2(0, 230));
-        CreateText(canvas.transform, "TitleText2", "JOURNEY", 72, new Vector2(0, 160));
-        GameObject coinsTextObj = CreateText(canvas.transform, "CoinsText", "Coins: 0", 28, new Vector2(-350, 310));
-        GameObject streakTextObj = CreateText(canvas.transform, "StreakText", "Streak: 0", 28, new Vector2(0, 310));
-        GameObject levelTextObj = CreateText(canvas.transform, "LevelText", "Level 1", 28, new Vector2(350, 310));
+        CreateText(canvas.transform, "TitleText", "WORD", 80, new Vector2(0, 250));
+        CreateText(canvas.transform, "TitleText2", "JOURNEY", 80, new Vector2(0, 170));
+        CreateText(canvas.transform, "CoinsText", "Coins: 0", 28, new Vector2(-350, 330));
+        CreateText(canvas.transform, "StreakText", "Streak: 0", 28, new Vector2(0, 330));
+        CreateText(canvas.transform, "LevelText", "Level 1", 28, new Vector2(350, 330));
 
-        GameObject playButton = CreateButton(canvas.transform, "PlayButton", "PLAY", new Vector2(0, 30), new Color(0.2f, 0.75f, 0.35f));
-        GameObject levelsButton = CreateButton(canvas.transform, "LevelsButton", "LEVELS", new Vector2(0, -50), new Color(0.2f, 0.6f, 0.9f));
-        GameObject shopButton = CreateButton(canvas.transform, "ShopButton", "SHOP", new Vector2(0, -130), new Color(0.9f, 0.65f, 0.15f));
-        GameObject settingsButton = CreateButton(canvas.transform, "SettingsButton", "SETTINGS", new Vector2(0, -210), new Color(0.55f, 0.55f, 0.6f));
+        GameObject playButton = CreateButton(canvas.transform, "PlayButton", "PLAY", new Vector2(0, 20), new Color(0.2f, 0.8f, 0.5f));
+        GameObject levelsButton = CreateButton(canvas.transform, "LevelsButton", "LEVELS", new Vector2(0, -65), new Color(0.3f, 0.65f, 1f));
+        GameObject shopButton = CreateButton(canvas.transform, "ShopButton", "SHOP", new Vector2(0, -150), new Color(1f, 0.75f, 0.2f));
+        GameObject settingsButton = CreateButton(canvas.transform, "SettingsButton", "SETTINGS", new Vector2(0, -235), new Color(0.55f, 0.55f, 0.6f));
 
         MenuManager menuManager = managerObj.GetComponent<MenuManager>();
-        menuManager.coinsText = coinsTextObj.GetComponent<TextMeshProUGUI>();
-        menuManager.streakText = streakTextObj.GetComponent<TextMeshProUGUI>();
-        menuManager.highLevelText = levelTextObj.GetComponent<TextMeshProUGUI>();
+        menuManager.coinsText = canvas.transform.Find("CoinsText").GetComponent<TextMeshProUGUI>();
+        menuManager.streakText = canvas.transform.Find("StreakText").GetComponent<TextMeshProUGUI>();
+        menuManager.highLevelText = canvas.transform.Find("LevelText").GetComponent<TextMeshProUGUI>();
         menuManager.playButton = playButton.GetComponent<Button>();
         menuManager.levelsButton = levelsButton.GetComponent<Button>();
         menuManager.shopButton = shopButton.GetComponent<Button>();
@@ -53,9 +53,9 @@ public class ProjectSetup : MonoBehaviour
     static void CreateGameScene()
     {
         var scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
-
-        GameObject bg = CreateBackground(scene, new Color(0.15f, 0.18f, 0.28f));
         GameObject canvas = CreateCanvas("GameCanvas");
+
+        CreateBackground(canvas, new Color(0.08f, 0.55f, 0.6f));
 
         GameObject managerObj = new GameObject("GameManager");
         managerObj.AddComponent<GameManager>();
@@ -66,79 +66,119 @@ public class ProjectSetup : MonoBehaviour
         managerObj.AddComponent<IAPManager>();
         managerObj.AddComponent<AudioManager>();
 
-        GameObject gridObj = new GameObject("PuzzleGrid");
-        gridObj.AddComponent<PuzzleGrid>();
-        PuzzleGrid puzzleGrid = gridObj.GetComponent<PuzzleGrid>();
-
-        GameObject gridParent = new GameObject("GridParent");
-        gridParent.transform.SetParent(canvas.transform, false);
-        RectTransform gridRect = gridParent.AddComponent<RectTransform>();
-        gridRect.anchorMin = new Vector2(0.1f, 0.3f);
-        gridRect.anchorMax = new Vector2(0.9f, 0.72f);
-        gridRect.sizeDelta = Vector2.zero;
-        gridRect.anchoredPosition = Vector2.zero;
-        puzzleGrid.gridParent = gridParent.transform;
-
-        GameObject wordListParent = new GameObject("WordListParent");
-        wordListParent.transform.SetParent(canvas.transform, false);
-        RectTransform wlRect = wordListParent.AddComponent<RectTransform>();
-        wlRect.anchorMin = new Vector2(0.05f, 0.08f);
-        wlRect.anchorMax = new Vector2(0.95f, 0.22f);
-        wlRect.sizeDelta = Vector2.zero;
-        wlRect.anchoredPosition = Vector2.zero;
-
         GameObject uiManagerObj = new GameObject("UIManager");
         UIManager uiManager = uiManagerObj.AddComponent<UIManager>();
 
-        CreateText(canvas.transform, "ScoreLabel", "SCORE", 16, new Vector2(-350, 370));
-        GameObject scoreText = CreateText(canvas.transform, "ScoreText", "0", 32, new Vector2(-350, 340));
-        GameObject levelTextUI = CreateText(canvas.transform, "LevelText", "Level 1", 32, new Vector2(0, 355));
-        CreateText(canvas.transform, "WordsLabel", "0/3", 18, new Vector2(0, 315));
-        CreateText(canvas.transform, "TimerLabel", "TIME", 16, new Vector2(350, 370));
-        GameObject timerText = CreateText(canvas.transform, "TimerText", "02:00", 32, new Vector2(350, 340));
-        GameObject currentWordText = CreateText(canvas.transform, "CurrentWordText", "", 36, new Vector2(0, -290));
-        CreateText(canvas.transform, "CoinsLabel", "", 22, new Vector2(-350, -340));
-        GameObject coinsTextUI = CreateText(canvas.transform, "CoinsText", "0", 22, new Vector2(-300, -340));
-        CreateText(canvas.transform, "HintLabel", "", 22, new Vector2(350, -340));
-        GameObject hintsTextUI = CreateText(canvas.transform, "HintsText", "3", 22, new Vector2(400, -340));
+        GameObject topBar = CreatePanel(canvas.transform, "TopBar", new Vector2(1080, 120));
+        RectTransform topRect = topBar.GetComponent<RectTransform>();
+        topRect.anchorMin = new Vector2(0, 1);
+        topRect.anchorMax = new Vector2(1, 1);
+        topRect.sizeDelta = new Vector2(0, 120);
+        topRect.anchoredPosition = new Vector2(0, -60);
+        topBar.GetComponent<Image>().color = new Color(0.06f, 0.4f, 0.45f, 0.9f);
 
-        GameObject submitButton = CreateButton(canvas.transform, "SubmitButton", "SUBMIT", new Vector2(0, -340), new Color(0.2f, 0.75f, 0.35f));
-        GameObject hintButton = CreateButton(canvas.transform, "HintButton", "HINT", new Vector2(-160, -410), new Color(0.9f, 0.65f, 0.15f), 160, 50);
-        GameObject shuffleButton = CreateButton(canvas.transform, "ShuffleButton", "SHUFFLE", new Vector2(160, -410), new Color(0.55f, 0.55f, 0.6f), 160, 50);
+        CreateText(topBar.transform, "ScoreLabel", "SCORE", 14, new Vector2(-320, 15));
+        GameObject scoreT = CreateText(topBar.transform, "ScoreText", "0", 30, new Vector2(-320, -12));
+        GameObject levelT = CreateText(topBar.transform, "LevelText", "Level 1", 28, new Vector2(0, -5));
+        GameObject timerT = CreateText(topBar.transform, "TimerText", "02:00", 28, new Vector2(320, -5));
+        GameObject heartsT = CreateText(topBar.transform, "HeartsText", "♥♥♥♥♥", 22, new Vector2(-100, 15));
+        GameObject coinsT = CreateText(topBar.transform, "CoinsText", "0", 22, new Vector2(-60, -5));
 
-        uiManager.levelText = levelTextUI.GetComponent<TextMeshProUGUI>();
-        uiManager.scoreText = scoreText.GetComponent<TextMeshProUGUI>();
-        uiManager.timerText = timerText.GetComponent<TextMeshProUGUI>();
-        uiManager.wordsFoundText = canvas.transform.Find("WordsLabel").GetComponent<TextMeshProUGUI>();
-        uiManager.currentWordText = currentWordText.GetComponent<TextMeshProUGUI>();
-        uiManager.coinsText = coinsTextUI.GetComponent<TextMeshProUGUI>();
-        uiManager.hintsText = hintsTextUI.GetComponent<TextMeshProUGUI>();
-        uiManager.submitButton = submitButton.GetComponent<Button>();
-        uiManager.hintButton = hintButton.GetComponent<Button>();
-        uiManager.shuffleButton = shuffleButton.GetComponent<Button>();
-        uiManager.wordListParent = wordListParent.transform;
+        uiManager.levelText = levelT.GetComponent<TextMeshProUGUI>();
+        uiManager.scoreText = scoreT.GetComponent<TextMeshProUGUI>();
+        uiManager.timerText = timerT.GetComponent<TextMeshProUGUI>();
+        uiManager.coinsText = coinsT.GetComponent<TextMeshProUGUI>();
+        uiManager.heartsText = heartsT.GetComponent<TextMeshProUGUI>();
 
-        GameObject levelCompletePanel = CreatePanel(canvas.transform, "LevelCompletePanel", new Vector2(600, 400));
-        uiManager.levelCompletePanel = levelCompletePanel;
-        CreateText(levelCompletePanel.transform, "CompleteTitle", "LEVEL COMPLETE!", 36, new Vector2(0, 120));
-        CreateText(levelCompletePanel.transform, "CompleteScore", "Score: 0", 24, new Vector2(0, 50));
-        CreateText(levelCompletePanel.transform, "CompleteCoins", "+0 Coins", 24, new Vector2(0, 0));
-        levelCompletePanel.SetActive(false);
+        GameObject progressBg = CreatePanel(canvas.transform, "ProgressBg", new Vector2(900, 16));
+        RectTransform pBgRect = progressBg.GetComponent<RectTransform>();
+        pBgRect.anchorMin = new Vector2(0.5f, 1);
+        pBgRect.anchorMax = new Vector2(0.5f, 1);
+        pBgRect.anchoredPosition = new Vector2(0, -135);
+        pBgRect.sizeDelta = new Vector2(900, 16);
+        progressBg.GetComponent<Image>().color = new Color(0.05f, 0.3f, 0.35f);
+
+        GameObject progressFill = new GameObject("ProgressFill");
+        progressFill.transform.SetParent(progressBg.transform, false);
+        RectTransform pFillRect = progressFill.AddComponent<RectTransform>();
+        pFillRect.anchorMin = Vector2.zero;
+        pFillRect.anchorMax = new Vector2(0, 1);
+        pFillRect.sizeDelta = new Vector2(900, 0);
+        Image fillImg = progressFill.AddComponent<Image>();
+        fillImg.color = new Color(0.2f, 0.85f, 0.5f);
+        fillImg.type = Image.Type.Filled;
+        fillImg.fillMethod = Image.FillMethod.Horizontal;
+        uiManager.progressBar = fillImg;
+
+        GameObject progressText = CreateText(canvas.transform, "ProgressText", "0%", 14, new Vector2(0, -135));
+        uiManager.progressText = progressText.GetComponent<TextMeshProUGUI>();
+
+        GameObject crosswordObj = new GameObject("CrosswordDisplay");
+        crosswordObj.transform.SetParent(canvas.transform, false);
+        RectTransform cwRect = crosswordObj.AddComponent<RectTransform>();
+        cwRect.anchorMin = new Vector2(0.05f, 0.55f);
+        cwRect.anchorMax = new Vector2(0.95f, 0.72f);
+        cwRect.sizeDelta = Vector2.zero;
+        cwRect.anchoredPosition = Vector2.zero;
+        crosswordObj.AddComponent<CrosswordDisplay>();
+        CrosswordDisplay crossword = crosswordObj.GetComponent<CrosswordDisplay>();
+        crossword.wordContainer = cwRect;
+
+        GameObject wordDisplay = CreateText(canvas.transform, "CurrentWordText", "", 38, new Vector2(0, 150));
+        uiManager.currentWordText = wordDisplay.GetComponent<TextMeshProUGUI>();
+        wordDisplay.GetComponent<TextMeshProUGUI>().fontStyle = FontStyles.Bold;
+
+        GameObject wheelObj = new GameObject("LetterWheel");
+        wheelObj.transform.SetParent(canvas.transform, false);
+        RectTransform wheelRect = wheelObj.AddComponent<RectTransform>();
+        wheelRect.anchorMin = new Vector2(0.5f, 0.08f);
+        wheelRect.anchorMax = new Vector2(0.5f, 0.45f);
+        wheelRect.sizeDelta = Vector2.zero;
+        wheelRect.anchoredPosition = Vector2.zero;
+        wheelObj.AddComponent<CircularLetterWheel>();
+        CircularLetterWheel wheel = wheelObj.GetComponent<CircularLetterWheel>();
+        wheel.wheelCenter = wheelRect;
+        wheel.wheelRadius = 140f;
+        wheel.letterSize = 65f;
+
+        GameObject wheelBg = new GameObject("WheelBackground");
+        wheelBg.transform.SetParent(wheelObj.transform, false);
+        RectTransform wbRect = wheelBg.AddComponent<RectTransform>();
+        wbRect.anchorMin = new Vector2(0.5f, 0.5f);
+        wbRect.anchorMax = new Vector2(0.5f, 0.5f);
+        wbRect.sizeDelta = new Vector2(360, 360);
+        Image wbImg = wheelBg.AddComponent<Image>();
+        wbImg.color = new Color(0.05f, 0.35f, 0.4f, 0.6f);
+        wheelBg.transform.SetAsFirstSibling();
+
+        GameObject hintBtn = CreateButton(canvas.transform, "HintButton", "HINT", new Vector2(-250, -100), new Color(1f, 0.75f, 0.2f), 140, 55);
+        GameObject shuffleBtn = CreateButton(canvas.transform, "ShuffleButton", "SHUFFLE", new Vector2(250, -100), new Color(0.55f, 0.55f, 0.65f), 140, 55);
+
+        uiManager.hintButton = hintBtn.GetComponent<Button>();
+        uiManager.shuffleButton = shuffleBtn.GetComponent<Button>();
 
         GameObject messagePanel = CreatePanel(canvas.transform, "MessagePanel", new Vector2(500, 80));
+        RectTransform msgRect = messagePanel.GetComponent<RectTransform>();
+        msgRect.anchorMin = new Vector2(0.5f, 0.5f);
+        msgRect.anchorMax = new Vector2(0.5f, 0.5f);
+        msgRect.anchoredPosition = new Vector2(0, 100);
+        messagePanel.GetComponent<Image>().color = new Color(0.1f, 0.15f, 0.2f, 0.95f);
         uiManager.messagePanel = messagePanel;
         uiManager.messageText = CreateText(messagePanel.transform, "MessageText", "", 24, Vector2.zero).GetComponent<TextMeshProUGUI>();
         messagePanel.SetActive(false);
 
-        GameObject pausePanel = CreatePanel(canvas.transform, "PausePanel", new Vector2(400, 300));
-        uiManager.pausePanel = pausePanel;
-        CreateText(pausePanel.transform, "PauseTitle", "PAUSED", 36, new Vector2(0, 80));
-        pausePanel.SetActive(false);
+        GameObject levelCompletePanel = CreatePanel(canvas.transform, "LevelCompletePanel", new Vector2(600, 400));
+        levelCompletePanel.GetComponent<Image>().color = new Color(0.06f, 0.4f, 0.45f, 0.98f);
+        CreateText(levelCompletePanel.transform, "CompleteTitle", "LEVEL COMPLETE!", 36, new Vector2(0, 120));
+        CreateText(levelCompletePanel.transform, "CompleteScore", "Score: 0", 24, new Vector2(0, 50));
+        CreateText(levelCompletePanel.transform, "CompleteCoins", "+0 Coins", 24, new Vector2(0, 0));
+        uiManager.levelCompletePanel = levelCompletePanel;
+        levelCompletePanel.SetActive(false);
 
         EditorSceneManager.SaveScene(scene, "Assets/Scenes/GameScene.unity");
     }
 
-    static GameObject CreateBackground(UnityEngine.SceneManagement.Scene scene, Color color)
+    static void CreateBackground(GameObject canvas, Color color)
     {
         Camera mainCam = Camera.main;
         if (mainCam != null)
@@ -146,26 +186,18 @@ public class ProjectSetup : MonoBehaviour
             mainCam.clearFlags = CameraClearFlags.SolidColor;
             mainCam.backgroundColor = color;
         }
-
-        RenderSettings.ambientLight = color;
         RenderSettings.skybox = null;
 
-        Canvas canvas = Object.FindObjectOfType<Canvas>();
-        if (canvas != null)
-        {
-            GameObject bg = new GameObject("Background");
-            RectTransform rect = bg.AddComponent<RectTransform>();
-            rect.anchorMin = Vector2.zero;
-            rect.anchorMax = Vector2.one;
-            rect.sizeDelta = Vector2.zero;
-            rect.anchoredPosition = Vector2.zero;
-            bg.transform.SetParent(canvas.transform, false);
-            bg.transform.SetAsFirstSibling();
-            Image img = bg.AddComponent<Image>();
-            img.color = color;
-            return bg;
-        }
-        return null;
+        GameObject bg = new GameObject("Background");
+        bg.transform.SetParent(canvas.transform, false);
+        RectTransform rect = bg.AddComponent<RectTransform>();
+        rect.anchorMin = Vector2.zero;
+        rect.anchorMax = Vector2.one;
+        rect.sizeDelta = Vector2.zero;
+        rect.anchoredPosition = Vector2.zero;
+        bg.transform.SetAsFirstSibling();
+        Image img = bg.AddComponent<Image>();
+        img.color = color;
     }
 
     static GameObject CreateCanvas(string name)
@@ -216,7 +248,7 @@ public class ProjectSetup : MonoBehaviour
         textRect.sizeDelta = Vector2.zero;
         TextMeshProUGUI tmp = textObj.AddComponent<TextMeshProUGUI>();
         tmp.text = label;
-        tmp.fontSize = 26;
+        tmp.fontSize = 24;
         tmp.fontStyle = FontStyles.Bold;
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.color = Color.white;
@@ -232,7 +264,7 @@ public class ProjectSetup : MonoBehaviour
         rect.anchoredPosition = Vector2.zero;
         rect.sizeDelta = size;
         Image img = panel.AddComponent<Image>();
-        img.color = new Color(0.1f, 0.12f, 0.2f, 0.95f);
+        img.color = new Color(0.1f, 0.12f, 0.2f, 0.9f);
         return panel;
     }
 

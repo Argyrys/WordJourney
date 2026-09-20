@@ -17,14 +17,8 @@ public class LevelManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 
     private void Start()
@@ -43,6 +37,7 @@ public class LevelManager : MonoBehaviour
         {
             timeRemaining -= Time.deltaTime;
             UIManager.Instance?.UpdateTimer(timeRemaining);
+            UIManager.Instance?.UpdateProgress((float)foundWords.Count / currentLevelData.targetWords.Count);
 
             if (timeRemaining <= 0)
             {
@@ -61,7 +56,9 @@ public class LevelManager : MonoBehaviour
         isLevelActive = true;
 
         UIManager.Instance?.UpdateLevelInfo(levelNumber, currentLevelData.targetWords.Count);
-        PuzzleGrid.Instance?.SetupGrid(currentLevelData);
+
+        CircularLetterWheel.Instance?.SetupWheel(currentLevelData.gridLetters);
+        CrosswordDisplay.Instance?.SetupWords(currentLevelData.targetWords);
     }
 
     public void WordFound(string word)
@@ -73,7 +70,8 @@ public class LevelManager : MonoBehaviour
             currentScore += wordScore;
 
             UIManager.Instance?.WordFound(word, currentScore);
-            UIManager.Instance?.UpdateProgress(foundWords.Count, currentLevelData.targetWords.Count);
+            UIManager.Instance?.UpdateProgress((float)foundWords.Count / currentLevelData.targetWords.Count);
+            CrosswordDisplay.Instance?.OnWordFound(word);
 
             if (foundWords.Count >= currentLevelData.targetWords.Count)
             {
@@ -92,11 +90,16 @@ public class LevelManager : MonoBehaviour
                 {
                     GameManager.Instance.UseHint();
                     WordFound(word);
-                    PuzzleGrid.Instance?.RevealWord(word);
+                    CircularLetterWheel.Instance?.RevealWord(word);
                     break;
                 }
             }
         }
+    }
+
+    public void ShuffleLetters()
+    {
+        CircularLetterWheel.Instance?.ShuffleLetters();
     }
 
     public List<string> GetTargetWords()
@@ -111,15 +114,12 @@ public class LevelManager : MonoBehaviour
 
     private int CalculateWordScore(string word)
     {
-        int baseScore = word.Length * 10;
-        int lengthBonus = word.Length > 4 ? (word.Length - 4) * 15 : 0;
-        return baseScore + lengthBonus;
+        return word.Length * 10 + (word.Length > 4 ? (word.Length - 4) * 15 : 0);
     }
 
     private void EndLevel(bool success)
     {
         isLevelActive = false;
-
         int stars = CalculateStars();
         GameManager.Instance.CompleteLevel(stars, currentScore);
     }
@@ -146,7 +146,6 @@ public class LevelManager : MonoBehaviour
 
         List<string> availableWords = WordDatabase.Instance.GetWordsForLevel(level);
         data.targetWords = availableWords;
-
         data.gridLetters = GenerateGridLetters(availableWords);
 
         return data;
@@ -154,7 +153,7 @@ public class LevelManager : MonoBehaviour
 
     private string GetWorldTheme(int world)
     {
-        string[] themes = { "Paris", "Tokyo", "New York", "London", "Rome", "Sydney", "Dubai", "Singapore" };
+        string[] themes = { "Nature", "Animals", "Food", "Travel", "Music", "Sports", "Space", "Ocean" };
         return themes[(world - 1) % themes.Length];
     }
 
@@ -188,11 +187,9 @@ public class LevelManager : MonoBehaviour
             }
         }
 
-        int targetCount = 20;
-        while (result.Count < targetCount)
+        while (result.Count < 8)
         {
-            char randomLetter = (char)Random.Range('A', 'Z' + 1);
-            result.Add(randomLetter);
+            result.Add((char)Random.Range('A', 'Z' + 1));
         }
 
         for (int i = result.Count - 1; i > 0; i--)

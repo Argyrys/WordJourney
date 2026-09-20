@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     public int currentWorld = 1;
     public int coins = 0;
     public int hints = 3;
+    public int lives = 5;
+    public int maxLives = 5;
     public int streak = 0;
 
     private void Awake()
@@ -81,6 +83,26 @@ public class GameManager : MonoBehaviour
         SaveGameData();
     }
 
+    public bool LoseLife()
+    {
+        if (lives > 0)
+        {
+            lives--;
+            SaveGameData();
+            return true;
+        }
+        return false;
+    }
+
+    public void RestoreLife()
+    {
+        if (lives < maxLives)
+        {
+            lives++;
+            SaveGameData();
+        }
+    }
+
     private int CalculateCoins(int stars, int score)
     {
         int baseCoins = 10;
@@ -113,6 +135,7 @@ public class GameManager : MonoBehaviour
     {
         PlayerPrefs.SetInt("Coins", coins);
         PlayerPrefs.SetInt("Hints", hints);
+        PlayerPrefs.SetInt("Lives", lives);
         PlayerPrefs.SetInt("Streak", streak);
         PlayerPrefs.SetInt("CurrentLevel", currentLevel);
         PlayerPrefs.SetInt("CurrentWorld", currentWorld);
@@ -123,6 +146,7 @@ public class GameManager : MonoBehaviour
     {
         coins = PlayerPrefs.GetInt("Coins", 0);
         hints = PlayerPrefs.GetInt("Hints", 3);
+        lives = PlayerPrefs.GetInt("Lives", 5);
         streak = PlayerPrefs.GetInt("Streak", 0);
         currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
         currentWorld = PlayerPrefs.GetInt("CurrentWorld", 1);
