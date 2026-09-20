@@ -12,6 +12,12 @@ public class PuzzleGrid : MonoBehaviour
     public int gridWidth = 5;
     public int gridHeight = 4;
 
+    [Header("Colors")]
+    public Color tileNormal = new Color(0.95f, 0.95f, 1f);
+    public Color tileSelected = new Color(0.3f, 0.7f, 1f);
+    public Color tileFound = new Color(0.3f, 0.85f, 0.4f);
+    public Color tileText = new Color(0.15f, 0.15f, 0.2f);
+
     private LetterTile[,] grid;
     private List<LetterTile> selectedTiles = new List<LetterTile>();
     private string currentWord = "";
@@ -39,7 +45,6 @@ public class PuzzleGrid : MonoBehaviour
             gridParent = transform;
         }
 
-        Debug.Log("SetupGrid called with " + levelData.gridLetters.Length + " letters, gridParent: " + gridParent.name);
         CreateGrid(levelData.gridLetters);
         WordValidator.Instance?.SetLevelWords(levelData.targetWords);
     }
@@ -49,8 +54,8 @@ public class PuzzleGrid : MonoBehaviour
         grid = new LetterTile[gridWidth, gridHeight];
         int letterIndex = 0;
 
-        float tileSize = 80f;
-        float spacing = 10f;
+        float tileSize = 85f;
+        float spacing = 12f;
         float totalWidth = gridWidth * (tileSize + spacing) - spacing;
         float totalHeight = gridHeight * (tileSize + spacing) - spacing;
         float startX = -totalWidth / 2f + tileSize / 2f;
@@ -95,7 +100,15 @@ public class PuzzleGrid : MonoBehaviour
         GameObject tileObj = new GameObject($"Tile_{x}_{y}");
         RectTransform rect = tileObj.AddComponent<RectTransform>();
         Image img = tileObj.AddComponent<Image>();
-        img.color = new Color(0.9f, 0.9f, 0.95f);
+        img.color = tileNormal;
+
+        Button btn = tileObj.AddComponent<Button>();
+        ColorBlock cb = btn.colors;
+        cb.normalColor = tileNormal;
+        cb.highlightedColor = new Color(0.85f, 0.88f, 0.95f);
+        cb.pressedColor = new Color(0.75f, 0.8f, 0.9f);
+        cb.selectedColor = tileNormal;
+        btn.colors = cb;
 
         GameObject textObj = new GameObject("LetterText");
         textObj.transform.SetParent(tileObj.transform, false);
@@ -105,9 +118,10 @@ public class PuzzleGrid : MonoBehaviour
         textRect.sizeDelta = Vector2.zero;
         TextMeshProUGUI tmp = textObj.AddComponent<TextMeshProUGUI>();
         tmp.text = letter.ToString();
-        tmp.fontSize = 36;
+        tmp.fontSize = 38;
+        tmp.fontStyle = FontStyles.Bold;
         tmp.alignment = TextAlignmentOptions.Center;
-        tmp.color = Color.black;
+        tmp.color = tileText;
 
         LetterTile tile = tileObj.AddComponent<LetterTile>();
         tile.letterText = tmp;
@@ -160,6 +174,10 @@ public class PuzzleGrid : MonoBehaviour
     {
         if (string.IsNullOrEmpty(currentWord) || currentWord.Length < 3)
         {
+            if (selectedTiles.Count > 0)
+            {
+                UIManager.Instance?.ShowMessage("Need at least 3 letters!");
+            }
             ClearSelection();
             return;
         }
@@ -170,15 +188,18 @@ public class PuzzleGrid : MonoBehaviour
             {
                 LevelManager.Instance.WordFound(currentWord);
                 HighlightFoundWord();
+                AudioManager.Instance?.PlayWordFound();
             }
             else
             {
                 UIManager.Instance?.ShowMessage("Not a target word!");
+                ShakeSelectedTiles();
             }
         }
         else
         {
             UIManager.Instance?.ShowMessage("Invalid word!");
+            ShakeSelectedTiles();
         }
 
         ClearSelection();
@@ -189,6 +210,14 @@ public class PuzzleGrid : MonoBehaviour
         foreach (LetterTile tile in selectedTiles)
         {
             tile.HighlightFound();
+        }
+    }
+
+    private void ShakeSelectedTiles()
+    {
+        foreach (LetterTile tile in selectedTiles)
+        {
+            tile.HighlightInvalid();
         }
     }
 
@@ -278,5 +307,7 @@ public class PuzzleGrid : MonoBehaviour
                 }
             }
         }
+
+        AudioManager.Instance?.PlayShuffle();
     }
 }

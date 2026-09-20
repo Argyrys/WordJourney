@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 
 public class UIManager : MonoBehaviour
 {
@@ -28,8 +29,8 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI completeScoreText;
     public TextMeshProUGUI completeCoinsText;
     public Image[] starsImages;
-    public Color starActiveColor = Color.yellow;
-    public Color starInactiveColor = Color.gray;
+    public Color starActiveColor = new Color(1f, 0.85f, 0f);
+    public Color starInactiveColor = new Color(0.3f, 0.3f, 0.35f);
 
     [Header("Buttons")]
     public Button submitButton;
@@ -86,7 +87,11 @@ public class UIManager : MonoBehaviour
 
         if (time <= 10)
         {
-            timerText.color = Color.red;
+            timerText.color = new Color(1f, 0.3f, 0.3f);
+        }
+        else if (time <= 30)
+        {
+            timerText.color = new Color(1f, 0.7f, 0.2f);
         }
         else
         {
@@ -106,7 +111,28 @@ public class UIManager : MonoBehaviour
 
     public void UpdateCurrentWord(string word)
     {
-        currentWordText.text = word;
+        if (currentWordText != null)
+        {
+            currentWordText.text = word;
+            if (!string.IsNullOrEmpty(word))
+            {
+                currentWordText.transform.localScale = Vector3.one * 1.05f;
+                StartCoroutine(ResetScale(currentWordText.transform, 0.1f));
+            }
+        }
+    }
+
+    private IEnumerator ResetScale(Transform t, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            t.localScale = Vector3.Lerp(Vector3.one * 1.05f, Vector3.one, elapsed / duration);
+            yield return null;
+        }
+        t.localScale = Vector3.one;
     }
 
     public void UpdateCurrencyUI()
@@ -127,8 +153,6 @@ public class UIManager : MonoBehaviour
     public void ShowLevelComplete(int stars, int coinsEarned)
     {
         levelCompletePanel.SetActive(true);
-        gamePanel.SetActive(false);
-
         completeLevelText.text = $"Level {GameManager.Instance.currentLevel}";
         completeScoreText.text = $"Score: {scoreText.text}";
         completeCoinsText.text = $"+{coinsEarned} Coins";
@@ -139,18 +163,25 @@ public class UIManager : MonoBehaviour
         }
 
         UpdateCurrencyUI();
+        AudioManager.Instance?.PlayLevelComplete();
     }
 
     public void ShowMessage(string message)
     {
-        messageText.text = message;
-        messagePanel.SetActive(true);
-        Invoke(nameof(HideMessage), 2f);
+        if (messageText != null && messagePanel != null)
+        {
+            messageText.text = message;
+            messagePanel.SetActive(true);
+            StopAllCoroutines();
+            StartCoroutine(HideMessageAfterDelay(1.5f));
+        }
     }
 
-    private void HideMessage()
+    private IEnumerator HideMessageAfterDelay(float delay)
     {
-        messagePanel.SetActive(false);
+        yield return new WaitForSeconds(delay);
+        if (messagePanel != null)
+            messagePanel.SetActive(false);
     }
 
     public void ShowPauseMenu()

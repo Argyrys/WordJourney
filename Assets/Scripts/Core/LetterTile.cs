@@ -2,17 +2,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+using System.Collections;
 
 public class LetterTile : MonoBehaviour, IPointerClickHandler
 {
     [Header("References")]
     public TextMeshProUGUI letterText;
     public Image backgroundImage;
-
-    [Header("Colors")]
-    public Color normalColor = Color.white;
-    public Color selectedColor = Color.yellow;
-    public Color foundColor = Color.green;
 
     [HideInInspector]
     public char letter;
@@ -24,6 +20,15 @@ public class LetterTile : MonoBehaviour, IPointerClickHandler
     public bool isFound = false;
 
     private bool isSelected = false;
+    private Vector3 originalScale;
+    private Color normalColor = new Color(0.95f, 0.95f, 1f);
+    private Color selectedColor = new Color(0.3f, 0.7f, 1f);
+    private Color foundColor = new Color(0.3f, 0.85f, 0.4f);
+
+    private void Awake()
+    {
+        originalScale = transform.localScale;
+    }
 
     public void Initialize(char _letter, int x, int y)
     {
@@ -52,7 +57,8 @@ public class LetterTile : MonoBehaviour, IPointerClickHandler
     {
         isSelected = true;
         backgroundImage.color = selectedColor;
-        transform.localScale = Vector3.one * 1.1f;
+        letterText.color = Color.white;
+        StartCoroutine(ScaleAnimation(1.12f, 0.1f));
     }
 
     public void Deselect()
@@ -61,8 +67,9 @@ public class LetterTile : MonoBehaviour, IPointerClickHandler
         if (!isFound)
         {
             backgroundImage.color = normalColor;
+            letterText.color = new Color(0.15f, 0.15f, 0.2f);
         }
-        transform.localScale = Vector3.one;
+        StartCoroutine(ScaleAnimation(1f, 0.1f));
     }
 
     public void HighlightFound()
@@ -70,7 +77,8 @@ public class LetterTile : MonoBehaviour, IPointerClickHandler
         isFound = true;
         isSelected = false;
         backgroundImage.color = foundColor;
-        transform.localScale = Vector3.one;
+        letterText.color = Color.white;
+        StartCoroutine(ScaleAnimation(1.15f, 0.15f));
     }
 
     public void HighlightInvalid()
@@ -78,20 +86,40 @@ public class LetterTile : MonoBehaviour, IPointerClickHandler
         StartCoroutine(ShakeAnimation());
     }
 
-    private System.Collections.IEnumerator ShakeAnimation()
+    private IEnumerator ScaleAnimation(float targetScale, float duration)
     {
-        Vector3 originalPos = transform.position;
-        float duration = 0.3f;
+        Vector3 startScale = transform.localScale;
+        Vector3 endScale = Vector3.one * targetScale;
         float elapsed = 0f;
 
         while (elapsed < duration)
         {
-            float x = Random.Range(-0.1f, 0.1f);
-            transform.position = originalPos + new Vector3(x, 0, 0);
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            t = t * t * (3f - 2f * t);
+            transform.localScale = Vector3.Lerp(startScale, endScale, t);
+            yield return null;
+        }
+
+        transform.localScale = endScale;
+    }
+
+    private IEnumerator ShakeAnimation()
+    {
+        Vector3 originalPos = transform.localPosition;
+        float duration = 0.3f;
+        float elapsed = 0f;
+        backgroundImage.color = new Color(1f, 0.3f, 0.3f);
+
+        while (elapsed < duration)
+        {
+            float x = Random.Range(-5f, 5f);
+            transform.localPosition = originalPos + new Vector3(x, 0, 0);
             elapsed += Time.deltaTime;
             yield return null;
         }
 
-        transform.position = originalPos;
+        transform.localPosition = originalPos;
+        backgroundImage.color = isSelected ? selectedColor : normalColor;
     }
 }
