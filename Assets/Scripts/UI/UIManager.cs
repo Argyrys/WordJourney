@@ -96,12 +96,12 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator PulseWord()
     {
-        currentWordText.transform.localScale = Vector3.one * 1.1f;
+        currentWordText.transform.localScale = Vector3.one * 1.12f;
         float elapsed = 0f;
         while (elapsed < 0.15f)
         {
             elapsed += Time.deltaTime;
-            currentWordText.transform.localScale = Vector3.Lerp(Vector3.one * 1.1f, Vector3.one, elapsed / 0.15f);
+            currentWordText.transform.localScale = Vector3.Lerp(Vector3.one * 1.12f, Vector3.one, elapsed / 0.15f);
             yield return null;
         }
         currentWordText.transform.localScale = Vector3.one;
@@ -111,7 +111,7 @@ public class UIManager : MonoBehaviour
     {
         if (GameManager.Instance != null)
         {
-            coinsText.text = GameManager.Instance.coins.ToString();
+            coinsText.text = $"\u25C6 {GameManager.Instance.coins}";
             UpdateHearts();
         }
     }
@@ -123,7 +123,7 @@ public class UIManager : MonoBehaviour
             string hearts = "";
             for (int i = 0; i < GameManager.Instance.maxLives; i++)
             {
-                hearts += i < GameManager.Instance.lives ? "♥" : "♡";
+                hearts += i < GameManager.Instance.lives ? "\u2665" : "\u2661";
             }
             heartsText.text = hearts;
         }

@@ -50,9 +50,9 @@ public class MenuManager : MonoBehaviour
     {
         if (GameManager.Instance != null)
         {
-            coinsText.text = GameManager.Instance.coins.ToString();
-            streakText.text = $"Streak: {GameManager.Instance.streak}";
-            highLevelText.text = $"Level {GameManager.Instance.GetMaxLevel() - 1}";
+            if (coinsText != null) coinsText.text = $"\u25C6 {GameManager.Instance.coins}";
+            if (streakText != null) streakText.text = $"Streak: {GameManager.Instance.streak}";
+            if (highLevelText != null) highLevelText.text = $"Level {GameManager.Instance.GetMaxLevel() - 1}";
         }
     }
 

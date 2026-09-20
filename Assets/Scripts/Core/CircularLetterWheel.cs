@@ -16,19 +16,19 @@ public class CircularLetterWheel : MonoBehaviour, IPointerDownHandler, IDragHand
     [Header("Colors")]
     public Color[] letterColors = new Color[]
     {
-        new Color(0.2f, 0.8f, 0.5f),
-        new Color(0.9f, 0.3f, 0.5f),
-        new Color(0.3f, 0.6f, 1f),
-        new Color(1f, 0.75f, 0.2f),
-        new Color(0.7f, 0.3f, 0.9f),
-        new Color(0.2f, 0.85f, 0.85f),
-        new Color(0.95f, 0.45f, 0.2f),
-        new Color(0.5f, 0.85f, 0.3f)
+        new Color(0.15f, 0.68f, 0.38f),
+        new Color(0.85f, 0.25f, 0.45f),
+        new Color(0.2f, 0.5f, 0.95f),
+        new Color(0.95f, 0.72f, 0.15f),
+        new Color(0.65f, 0.28f, 0.85f),
+        new Color(0.15f, 0.78f, 0.82f),
+        new Color(0.9f, 0.42f, 0.18f),
+        new Color(0.45f, 0.8f, 0.28f)
     };
 
     [Header("Selection Line")]
     public Image selectionLine;
-    public Color lineColor = new Color(0.3f, 0.9f, 1f, 0.8f);
+    public Color lineColor = new Color(0.3f, 0.92f, 1f, 0.85f);
 
     private List<WheelLetter> letters = new List<WheelLetter>();
     private List<WheelLetter> selectedLetters = new List<WheelLetter>();
@@ -49,8 +49,8 @@ public class CircularLetterWheel : MonoBehaviour, IPointerDownHandler, IDragHand
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
         lineRenderer.startColor = lineColor;
         lineRenderer.endColor = lineColor;
-        lineRenderer.startWidth = 6f;
-        lineRenderer.endWidth = 6f;
+        lineRenderer.startWidth = 8f;
+        lineRenderer.endWidth = 8f;
         lineRenderer.positionCount = 0;
         lineRenderer.sortingOrder = 10;
     }
@@ -93,6 +93,17 @@ public class CircularLetterWheel : MonoBehaviour, IPointerDownHandler, IDragHand
         rect.anchoredPosition = position;
         rect.sizeDelta = new Vector2(letterSize, letterSize);
 
+        GameObject shadowObj = new GameObject("Shadow");
+        shadowObj.transform.SetParent(obj.transform, false);
+        RectTransform sRect = shadowObj.AddComponent<RectTransform>();
+        sRect.anchorMin = Vector2.zero;
+        sRect.anchorMax = Vector2.one;
+        sRect.sizeDelta = new Vector2(3, -3);
+        sRect.anchoredPosition = new Vector2(2, -2);
+        Image sImg = shadowObj.AddComponent<Image>();
+        sImg.color = new Color(0, 0, 0, 0.3f);
+        shadowObj.transform.SetAsFirstSibling();
+
         Image bg = obj.AddComponent<Image>();
         bg.color = letterColors[index % letterColors.Length];
 
@@ -104,7 +115,7 @@ public class CircularLetterWheel : MonoBehaviour, IPointerDownHandler, IDragHand
         textRect.sizeDelta = Vector2.zero;
         TextMeshProUGUI tmp = textObj.AddComponent<TextMeshProUGUI>();
         tmp.text = letter.ToString();
-        tmp.fontSize = 32;
+        tmp.fontSize = 34;
         tmp.fontStyle = FontStyles.Bold;
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.color = Color.white;
@@ -289,7 +300,7 @@ public class WheelLetter : MonoBehaviour
     public char letter;
     public Image background;
     public Color normalColor;
-    public Color selectedColor = new Color(1f, 1f, 1f, 0.9f);
+    public Color selectedColor = new Color(1f, 1f, 1f, 0.95f);
     public int index;
 
     public void SetSelected(bool selected)
@@ -298,6 +309,6 @@ public class WheelLetter : MonoBehaviour
         {
             background.color = selected ? selectedColor : normalColor;
         }
-        transform.localScale = selected ? Vector3.one * 1.15f : Vector3.one;
+        transform.localScale = selected ? Vector3.one * 1.18f : Vector3.one;
     }
 }

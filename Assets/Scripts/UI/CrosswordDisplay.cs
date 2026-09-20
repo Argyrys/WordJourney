@@ -10,9 +10,9 @@ public class CrosswordDisplay : MonoBehaviour
     public RectTransform wordContainer;
 
     [Header("Colors")]
-    public Color emptySlotColor = new Color(0.12f, 0.18f, 0.28f, 0.9f);
-    public Color foundWordColor = new Color(0.2f, 0.8f, 0.5f);
-    public Color emptyTextColor = new Color(0.5f, 0.65f, 0.75f);
+    public Color emptySlotColor = new Color(0.08f, 0.15f, 0.25f, 0.95f);
+    public Color foundWordColor = new Color(0.2f, 0.82f, 0.48f);
+    public Color emptyTextColor = new Color(0.4f, 0.55f, 0.65f);
     public Color foundTextColor = Color.white;
 
     private List<WordSlot> wordSlots = new List<WordSlot>();
@@ -75,6 +75,17 @@ public class CrosswordDisplay : MonoBehaviour
         rect.anchoredPosition = position;
         rect.sizeDelta = new Vector2(width, height);
 
+        GameObject shadowObj = new GameObject("Shadow");
+        shadowObj.transform.SetParent(slotObj.transform, false);
+        RectTransform sRect = shadowObj.AddComponent<RectTransform>();
+        sRect.anchorMin = Vector2.zero;
+        sRect.anchorMax = Vector2.one;
+        sRect.sizeDelta = new Vector2(3, -3);
+        sRect.anchoredPosition = new Vector2(2, -2);
+        Image sImg = shadowObj.AddComponent<Image>();
+        sImg.color = new Color(0, 0, 0, 0.25f);
+        shadowObj.transform.SetAsFirstSibling();
+
         Image bg = slotObj.AddComponent<Image>();
         bg.color = emptySlotColor;
 
@@ -87,7 +98,7 @@ public class CrosswordDisplay : MonoBehaviour
 
         TextMeshProUGUI tmp = textObj.AddComponent<TextMeshProUGUI>();
         tmp.text = new string('_', word.Length);
-        tmp.fontSize = 40;
+        tmp.fontSize = 42;
         tmp.fontStyle = FontStyles.Bold;
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.color = emptyTextColor;
