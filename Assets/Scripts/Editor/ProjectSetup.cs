@@ -29,9 +29,9 @@ public class ProjectSetup : MonoBehaviour
 
         CreateText(canvas.transform, "TitleText", "WORD", 72, new Vector2(0, 230));
         CreateText(canvas.transform, "TitleText2", "JOURNEY", 72, new Vector2(0, 160));
-        coinsText = CreateText(canvas.transform, "CoinsText", "Coins: 0", 28, new Vector2(-350, 310));
-        streakText = CreateText(canvas.transform, "StreakText", "Streak: 0", 28, new Vector2(0, 310));
-        levelText = CreateText(canvas.transform, "LevelText", "Level 1", 28, new Vector2(350, 310));
+        GameObject coinsTextObj = CreateText(canvas.transform, "CoinsText", "Coins: 0", 28, new Vector2(-350, 310));
+        GameObject streakTextObj = CreateText(canvas.transform, "StreakText", "Streak: 0", 28, new Vector2(0, 310));
+        GameObject levelTextObj = CreateText(canvas.transform, "LevelText", "Level 1", 28, new Vector2(350, 310));
 
         GameObject playButton = CreateButton(canvas.transform, "PlayButton", "PLAY", new Vector2(0, 30), new Color(0.2f, 0.75f, 0.35f));
         GameObject levelsButton = CreateButton(canvas.transform, "LevelsButton", "LEVELS", new Vector2(0, -50), new Color(0.2f, 0.6f, 0.9f));
@@ -39,9 +39,9 @@ public class ProjectSetup : MonoBehaviour
         GameObject settingsButton = CreateButton(canvas.transform, "SettingsButton", "SETTINGS", new Vector2(0, -210), new Color(0.55f, 0.55f, 0.6f));
 
         MenuManager menuManager = managerObj.GetComponent<MenuManager>();
-        menuManager.coinsText = coinsText.GetComponent<TextMeshProUGUI>();
-        menuManager.streakText = streakText.GetComponent<TextMeshProUGUI>();
-        menuManager.highLevelText = levelText.GetComponent<TextMeshProUGUI>();
+        menuManager.coinsText = coinsTextObj.GetComponent<TextMeshProUGUI>();
+        menuManager.streakText = streakTextObj.GetComponent<TextMeshProUGUI>();
+        menuManager.highLevelText = levelTextObj.GetComponent<TextMeshProUGUI>();
         menuManager.playButton = playButton.GetComponent<Button>();
         menuManager.levelsButton = levelsButton.GetComponent<Button>();
         menuManager.shopButton = shopButton.GetComponent<Button>();
@@ -49,10 +49,6 @@ public class ProjectSetup : MonoBehaviour
 
         EditorSceneManager.SaveScene(scene, "Assets/Scenes/MenuScene.unity");
     }
-
-    static TextMeshProUGUI coinsText;
-    static TextMeshProUGUI streakText;
-    static TextMeshProUGUI levelText;
 
     static void CreateGameScene()
     {
