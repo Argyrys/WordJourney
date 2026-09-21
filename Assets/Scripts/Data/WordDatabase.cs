@@ -94,7 +94,7 @@ public class WordDatabase : MonoBehaviour
             }
         }
 
-        while (selectedWords.Count < wordCount && selectedWords.Count < 3)
+        while (selectedWords.Count < wordCount && selectedWords.Count < wordCount)
         {
             string fallback = suitableWords.FirstOrDefault(w => !selectedWords.Contains(w));
             if (fallback != null)
@@ -117,10 +117,11 @@ public class WordDatabase : MonoBehaviour
 
     private int GetWordCountForLevel(int level)
     {
-        if (level <= 3) return 3;
-        if (level <= 10) return 3;
-        if (level <= 20) return 4;
-        return Mathf.Min(5, 3 + level / 15);
+        if (level <= 3) return 6;
+        if (level <= 10) return 8;
+        if (level <= 20) return 10;
+        if (level <= 50) return 11;
+        return Mathf.Min(12, 8 + level / 20);
     }
 
     public bool IsValidWord(string word)

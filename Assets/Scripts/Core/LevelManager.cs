@@ -188,7 +188,7 @@ public class LevelManager : MonoBehaviour
             }
         }
 
-        while (result.Count < 8)
+        while (result.Count < 10)
         {
             result.Add((char)Random.Range('A', 'Z' + 1));
         }

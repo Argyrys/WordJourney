@@ -179,8 +179,8 @@ public class ProjectSetup : MonoBehaviour
         GameObject crosswordObj = new GameObject("CrosswordDisplay");
         crosswordObj.transform.SetParent(canvas.transform, false);
         RectTransform cwRect = crosswordObj.AddComponent<RectTransform>();
-        cwRect.anchorMin = new Vector2(0.03f, 0.48f);
-        cwRect.anchorMax = new Vector2(0.97f, 0.85f);
+        cwRect.anchorMin = new Vector2(0.03f, 0.46f);
+        cwRect.anchorMax = new Vector2(0.97f, 0.87f);
         cwRect.sizeDelta = Vector2.zero;
         cwRect.anchoredPosition = Vector2.zero;
         crosswordObj.AddComponent<CrosswordDisplay>();

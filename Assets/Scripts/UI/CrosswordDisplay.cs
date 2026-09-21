@@ -31,11 +31,11 @@ public class CrosswordDisplay : MonoBehaviour
         float containerWidth = wordContainer.rect.width;
         float containerHeight = wordContainer.rect.height;
 
-        if (containerWidth <= 0) containerWidth = 1000f;
-        if (containerHeight <= 0) containerHeight = 600f;
+        if (containerWidth <= 0) containerWidth = 1020f;
+        if (containerHeight <= 0) containerHeight = 700f;
 
-        float paddingX = 20f;
-        float paddingY = 15f;
+        float paddingX = 15f;
+        float paddingY = 10f;
         float availableWidth = containerWidth - paddingX * 2;
         float availableHeight = containerHeight - paddingY * 2;
 
@@ -43,10 +43,10 @@ public class CrosswordDisplay : MonoBehaviour
         int rightCount = targetWords.Count - leftCount;
         int maxRows = Mathf.Max(leftCount, rightCount);
 
-        float spacingY = 12f;
-        float rowHeight = Mathf.Min((availableHeight - spacingY * (maxRows - 1)) / maxRows, 65f);
-        rowHeight = Mathf.Max(rowHeight, 45f);
-        float colGap = 40f;
+        float spacingY = 8f;
+        float rowHeight = Mathf.Min((availableHeight - spacingY * (maxRows - 1)) / maxRows, 55f);
+        rowHeight = Mathf.Max(rowHeight, 38f);
+        float colGap = 35f;
 
         float maxCharPerSlot = 0;
         foreach (string w in targetWords)
@@ -54,8 +54,8 @@ public class CrosswordDisplay : MonoBehaviour
 
         float maxSlotWidth = (availableWidth - colGap) / 2f;
         float charWidth = maxSlotWidth / (maxCharPerSlot + 2f);
-        charWidth = Mathf.Min(charWidth, 48f);
-        charWidth = Mathf.Max(charWidth, 32f);
+        charWidth = Mathf.Min(charWidth, 44f);
+        charWidth = Mathf.Max(charWidth, 28f);
 
         float leftColX = -availableWidth / 4f - colGap / 4f;
         float rightColX = availableWidth / 4f + colGap / 4f;
@@ -70,13 +70,13 @@ public class CrosswordDisplay : MonoBehaviour
             int row = i / 2;
 
             float slotWidth = (word.Length + 1.5f) * charWidth;
-            slotWidth = Mathf.Max(slotWidth, 90f);
+            slotWidth = Mathf.Max(slotWidth, 80f);
             slotWidth = Mathf.Min(slotWidth, maxSlotWidth);
 
             float x = isLeft ? leftColX : rightColX;
             float y = startY - row * (rowHeight + spacingY);
 
-            float stagger = isLeft ? 0f : rowHeight * 0.35f;
+            float stagger = isLeft ? 0f : rowHeight * 0.3f;
             y -= stagger;
 
             CreateWordSlot(word, new Vector2(x, y), slotWidth, rowHeight);
