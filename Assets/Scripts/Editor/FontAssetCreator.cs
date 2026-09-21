@@ -1,7 +1,6 @@
 #if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
-using TMPro;
 
 public class FontAssetCreator : MonoBehaviour
 {
@@ -9,27 +8,20 @@ public class FontAssetCreator : MonoBehaviour
     public static void CreateFontAsset()
     {
         string fontPath = "Assets/Fonts/Nunito.ttf";
-        string outputPath = "Assets/Fonts/Nunito SDF.asset";
 
-        Font font = AssetDatabase.LoadAssetAtPath<Font>(fontPath);
-        if (font == null)
+        if (!System.IO.File.Exists(fontPath))
         {
             Debug.LogError("Font not found at: " + fontPath);
             return;
         }
 
-        TMP_FontAsset fontAsset = TMP_FontAsset.CreateFontAsset(font, 90, 8192);
-        if (fontAsset != null)
-        {
-            fontAsset.name = "Nunito SDF";
-            AssetDatabase.CreateAsset(fontAsset, outputPath);
-            AssetDatabase.SaveAssets();
-            Debug.Log("Font asset created at: " + outputPath);
-        }
-        else
-        {
-            Debug.LogError("Failed to create font asset");
-        }
+        Debug.Log("To create the font asset:\n1. Go to Window > TextMeshPro > Font Asset Creator\n2. Select Assets/Fonts/Nunito.ttf\n3. Click Generate Font Atlas\n4. Save as Assets/Fonts/Nunito SDF.asset");
+        EditorUtility.DisplayDialog("Create Font Asset",
+            "1. Go to Window > TextMeshPro > Font Asset Creator\n" +
+            "2. Select Assets/Fonts/Nunito.ttf\n" +
+            "3. Click Generate Font Atlas\n" +
+            "4. Save as Assets/Fonts/Nunito SDF.asset",
+            "OK");
     }
 }
 #endif
