@@ -20,7 +20,7 @@ public class FontManager : MonoBehaviour
     {
         if (gameFont == null) return;
 
-        TextMeshProUGUI[] allText = FindObjectsByType<TextMeshProUGUI>(FindObjectsSortMode.None);
+        TextMeshProUGUI[] allText = FindObjectsByType<TextMeshProUGUI>();
         foreach (TextMeshProUGUI tmp in allText)
         {
             if (tmp.font != gameFont)

@@ -18,7 +18,7 @@ public class FontAssetCreator : MonoBehaviour
             return;
         }
 
-        TMP_FontAsset fontAsset = TMP_FontAsset.CreateFontAsset(font, 90, GlyphRenderMode.SDFAA, 8192, 8192);
+        TMP_FontAsset fontAsset = TMP_FontAsset.CreateFontAsset(font, 90, 8192);
         if (fontAsset != null)
         {
             fontAsset.name = "Nunito SDF";
