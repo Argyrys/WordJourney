@@ -111,6 +111,19 @@ public class CircularLetterWheel : MonoBehaviour, IPointerDownHandler, IDragHand
         bg.sprite = circleSprite;
         bg.color = letterColors[index % letterColors.Length];
 
+        // Add glossiness overlay (top half shine)
+        GameObject glossObj = new GameObject("Gloss");
+        glossObj.transform.SetParent(obj.transform, false);
+        RectTransform gRect = glossObj.AddComponent<RectTransform>();
+        gRect.anchorMin = new Vector2(0, 0.5f);
+        gRect.anchorMax = new Vector2(1, 1);
+        gRect.sizeDelta = Vector2.zero;
+        gRect.anchoredPosition = Vector2.zero;
+        Image gImg = glossObj.AddComponent<Image>();
+        gImg.sprite = UISpriteGenerator.CreateGradient(64, 64, new Color(1, 1, 1, 0.35f), new Color(1, 1, 1, 0f));
+        gImg.type = Image.Type.Simple;
+        gImg.raycastTarget = false;
+
         GameObject textObj = new GameObject("Text");
         textObj.transform.SetParent(obj.transform, false);
         RectTransform textRect = textObj.AddComponent<RectTransform>();

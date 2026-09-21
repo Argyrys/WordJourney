@@ -13,11 +13,13 @@ public class ProjectSetup : MonoBehaviour
     private static Sprite circle;
     private static Sprite pill;
     private static Sprite badge;
+    private static TMP_FontAsset gameFontAsset;
 
     [MenuItem("Tools/Setup WordJourney Project")]
     public static void SetupProject()
     {
         GenerateSprites();
+        LoadFont();
         CreateMenuScene();
         CreateGameScene();
         SetupBuildSettings();
@@ -32,6 +34,15 @@ public class ProjectSetup : MonoBehaviour
         circle = UISpriteGenerator.CreateCircle(128, Color.white);
         pill = UISpriteGenerator.CreateRoundedRect(256, 64, 32, Color.white);
         badge = UISpriteGenerator.CreateCircle(64, Color.white);
+    }
+
+    static void LoadFont()
+    {
+        gameFontAsset = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Fonts/Nunito SDF.asset");
+        if (gameFontAsset == null)
+        {
+            Debug.LogWarning("Nunito SDF font asset not found. Using default TMP font. Run Tools > Create TMP Font Asset first.");
+        }
     }
 
     static void CreateMenuScene()
@@ -49,6 +60,10 @@ public class ProjectSetup : MonoBehaviour
         GameObject managerObj = new GameObject("MenuManager");
         managerObj.AddComponent<MenuManager>();
         managerObj.AddComponent<AudioManager>();
+
+        GameObject fontManagerObj = new GameObject("FontManager");
+        FontManager fontManager = fontManagerObj.AddComponent<FontManager>();
+        fontManager.gameFont = gameFontAsset;
 
         GameObject titleShadow1 = CreateText(canvas.transform, "TitleShadow1", "WORD", 84, new Vector2(3, 253));
         titleShadow1.GetComponent<TextMeshProUGUI>().color = new Color(0, 0, 0, 0.35f);
@@ -72,10 +87,10 @@ public class ProjectSetup : MonoBehaviour
         GameObject streakT = CreateText(statsPanel.transform, "StreakText", "Streak: 0", 20, new Vector2(0, 0));
         GameObject levelT = CreateText(statsPanel.transform, "LevelText", "Level 1", 20, new Vector2(220, 0));
 
-        GameObject playButton = CreateRoundedButton(canvas.transform, "PlayButton", "PLAY", new Vector2(0, 30), accentGreen, 340, 90, roundedLarge, fontSize: 36);
-        GameObject levelsButton = CreateRoundedButton(canvas.transform, "LevelsButton", "LEVELS", new Vector2(0, -80), new Color(0.18f, 0.48f, 0.90f), 340, 75, roundedMed, fontSize: 28);
-        GameObject shopButton = CreateRoundedButton(canvas.transform, "ShopButton", "SHOP", new Vector2(0, -175), accentGold, 340, 75, roundedMed, fontSize: 28);
-        GameObject settingsButton = CreateRoundedButton(canvas.transform, "SettingsButton", "SETTINGS", new Vector2(0, -265), new Color(0.40f, 0.45f, 0.55f), 340, 75, roundedMed, fontSize: 28);
+        GameObject playButton = CreateGradientButton(canvas.transform, "PlayButton", "PLAY", new Vector2(0, 30), accentGreen, new Color(0.18f, 0.60f, 0.28f), 340, 90, roundedLarge, fontSize: 36);
+        GameObject levelsButton = CreateGradientButton(canvas.transform, "LevelsButton", "LEVELS", new Vector2(0, -80), new Color(0.18f, 0.48f, 0.90f), new Color(0.12f, 0.35f, 0.75f), 340, 75, roundedMed, fontSize: 28);
+        GameObject shopButton = CreateGradientButton(canvas.transform, "ShopButton", "SHOP", new Vector2(0, -175), accentGold, new Color(0.80f, 0.60f, 0.10f), 340, 75, roundedMed, fontSize: 28);
+        GameObject settingsButton = CreateGradientButton(canvas.transform, "SettingsButton", "SETTINGS", new Vector2(0, -265), new Color(0.40f, 0.45f, 0.55f), new Color(0.30f, 0.35f, 0.45f), 340, 75, roundedMed, fontSize: 28);
 
         AddButtonShadow(playButton);
         AddButtonShadow(levelsButton);
@@ -120,6 +135,10 @@ public class ProjectSetup : MonoBehaviour
         managerObj.AddComponent<AdsManager>();
         managerObj.AddComponent<IAPManager>();
         managerObj.AddComponent<AudioManager>();
+
+        GameObject fontManagerObj = new GameObject("FontManager");
+        FontManager fontManager = fontManagerObj.AddComponent<FontManager>();
+        fontManager.gameFont = gameFontAsset;
 
         GameObject uiManagerObj = new GameObject("UIManager");
         UIManager uiManager = uiManagerObj.AddComponent<UIManager>();
@@ -236,7 +255,7 @@ public class ProjectSetup : MonoBehaviour
         wheel.wheelRadius = 150f;
         wheel.letterSize = 68f;
 
-        // Wheel background with rounded corners
+        // Wheel background with gradient
         GameObject wheelShadowOuter = new GameObject("WheelShadowOuter");
         wheelShadowOuter.transform.SetParent(wheelObj.transform, false);
         RectTransform wsoRect = wheelShadowOuter.AddComponent<RectTransform>();
@@ -257,6 +276,7 @@ public class ProjectSetup : MonoBehaviour
         Image wbImg = wheelBg.AddComponent<Image>();
         wbImg.sprite = circle;
         wbImg.color = wheelBgDark;
+        AddGradientOverlay(wheelBg, new Color(0.06f, 0.30f, 0.40f, 0.3f), new Color(0.01f, 0.10f, 0.15f, 0.3f));
         wheelBg.transform.SetAsFirstSibling();
 
         GameObject wheelBgInner = new GameObject("WheelInner");
@@ -270,13 +290,13 @@ public class ProjectSetup : MonoBehaviour
         wbiImg.color = new Color(0.04f, 0.22f, 0.30f, 0.5f);
         wheelBgInner.transform.SetAsFirstSibling();
 
-        // Buttons with rounded corners
-        GameObject shuffleBtn = CreateRoundedButton(canvas.transform, "ShuffleButton", "SHUFFLE", new Vector2(-280, 60), new Color(0.06f, 0.15f, 0.22f, 0.9f), 150, 55, roundedMed, new Vector2(0.5f, 0.19f), new Vector2(0.5f, 0.19f), 16);
-        GameObject hintBtn = CreateRoundedButton(canvas.transform, "HintButton", "HINTS", new Vector2(280, 60), new Color(0.06f, 0.15f, 0.22f, 0.9f), 150, 55, roundedMed, new Vector2(0.5f, 0.19f), new Vector2(0.5f, 0.19f), 16);
+        // Buttons with gradient
+        GameObject shuffleBtn = CreateGradientButton(canvas.transform, "ShuffleButton", "SHUFFLE", new Vector2(-280, 60), new Color(0.08f, 0.18f, 0.26f, 0.95f), new Color(0.04f, 0.10f, 0.16f, 0.95f), 150, 55, roundedMed, new Vector2(0.5f, 0.19f), new Vector2(0.5f, 0.19f), 16);
+        GameObject hintBtn = CreateGradientButton(canvas.transform, "HintButton", "HINTS", new Vector2(280, 60), new Color(0.08f, 0.18f, 0.26f, 0.95f), new Color(0.04f, 0.10f, 0.16f, 0.95f), 150, 55, roundedMed, new Vector2(0.5f, 0.19f), new Vector2(0.5f, 0.19f), 16);
 
         CreateButtonBadge(hintBtn, "1");
 
-        GameObject bonusBtn = CreateRoundedButton(canvas.transform, "BonusButton", "BONUS WORD", new Vector2(280, -10), new Color(0.06f, 0.15f, 0.22f, 0.8f), 170, 50, roundedMed, new Vector2(0.5f, 0.14f), new Vector2(0.5f, 0.14f), 14);
+        GameObject bonusBtn = CreateGradientButton(canvas.transform, "BonusButton", "BONUS WORD", new Vector2(280, -10), new Color(0.08f, 0.18f, 0.26f, 0.85f), new Color(0.04f, 0.10f, 0.16f, 0.85f), 170, 50, roundedMed, new Vector2(0.5f, 0.14f), new Vector2(0.5f, 0.14f), 14);
 
         uiManager.hintButton = hintBtn.GetComponent<Button>();
         uiManager.shuffleButton = shuffleBtn.GetComponent<Button>();
@@ -328,13 +348,28 @@ public class ProjectSetup : MonoBehaviour
         CreateText(levelCompletePanel.transform, "CompleteScore", "Score: 0", 26, new Vector2(0, 0));
         CreateText(levelCompletePanel.transform, "CompleteCoins", "+0 Coins", 26, new Vector2(0, -40));
 
-        GameObject continueBtn = CreateRoundedButton(levelCompletePanel.transform, "ContinueButton", "CONTINUE", new Vector2(0, -120), accentGreen, 280, 60, roundedMed);
+        GameObject continueBtn = CreateGradientButton(levelCompletePanel.transform, "ContinueButton", "CONTINUE", new Vector2(0, -120), accentGreen, new Color(0.18f, 0.60f, 0.28f), 280, 60, roundedMed);
         AddButtonShadow(continueBtn);
 
         uiManager.levelCompletePanel = levelCompletePanel;
         levelCompletePanel.SetActive(false);
 
         EditorSceneManager.SaveScene(scene, "Assets/Scenes/GameScene.unity");
+    }
+
+    static void AddGradientOverlay(GameObject parent, Color topColor, Color bottomColor)
+    {
+        GameObject overlay = new GameObject("GradientOverlay");
+        overlay.transform.SetParent(parent.transform, false);
+        RectTransform rect = overlay.AddComponent<RectTransform>();
+        rect.anchorMin = Vector2.zero;
+        rect.anchorMax = Vector2.one;
+        rect.sizeDelta = Vector2.zero;
+        rect.anchoredPosition = Vector2.zero;
+        Image img = overlay.AddComponent<Image>();
+        img.sprite = UISpriteGenerator.CreateGradient(128, 128, topColor, bottomColor);
+        img.type = Image.Type.Simple;
+        img.raycastTarget = false;
     }
 
     static void CreateButtonBadge(GameObject btnObj, string badgeText)
@@ -362,6 +397,7 @@ public class ProjectSetup : MonoBehaviour
         btmp.fontStyle = FontStyles.Bold;
         btmp.alignment = TextAlignmentOptions.Center;
         btmp.color = Color.white;
+        if (gameFontAsset != null) btmp.font = gameFontAsset;
     }
 
     static void AddButtonShadow(GameObject btnObj)
@@ -399,6 +435,19 @@ public class ProjectSetup : MonoBehaviour
         bg.transform.SetAsFirstSibling();
         Image img = bg.AddComponent<Image>();
         img.color = color;
+
+        // Add subtle radial gradient overlay
+        GameObject gradientOverlay = new GameObject("BackgroundGradient");
+        gradientOverlay.transform.SetParent(bg.transform, false);
+        RectTransform gRect = gradientOverlay.AddComponent<RectTransform>();
+        gRect.anchorMin = Vector2.zero;
+        gRect.anchorMax = Vector2.one;
+        gRect.sizeDelta = Vector2.zero;
+        gRect.anchoredPosition = Vector2.zero;
+        Image gImg = gradientOverlay.AddComponent<Image>();
+        gImg.sprite = UISpriteGenerator.CreateGradient(128, 128, new Color(0.08f, 0.50f, 0.60f, 0.4f), new Color(0.02f, 0.30f, 0.38f, 0.2f));
+        gImg.type = Image.Type.Simple;
+        gImg.raycastTarget = false;
     }
 
     static GameObject CreateCanvas(string name)
@@ -427,6 +476,7 @@ public class ProjectSetup : MonoBehaviour
         tmp.fontSize = fontSize;
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.color = Color.white;
+        if (gameFontAsset != null) tmp.font = gameFontAsset;
         return textObj;
     }
 
@@ -456,7 +506,7 @@ public class ProjectSetup : MonoBehaviour
         return panel;
     }
 
-    static GameObject CreateRoundedButton(Transform parent, string name, string label, Vector2 position, Color bgColor, float width, float height, Sprite sprite, Vector2? anchorMin = null, Vector2? anchorMax = null, int fontSize = 24)
+    static GameObject CreateGradientButton(Transform parent, string name, string label, Vector2 position, Color topColor, Color bottomColor, float width, float height, Sprite sprite, Vector2? anchorMin = null, Vector2? anchorMax = null, int fontSize = 24)
     {
         GameObject btnObj = new GameObject(name);
         btnObj.transform.SetParent(parent, false);
@@ -465,10 +515,25 @@ public class ProjectSetup : MonoBehaviour
         if (anchorMax.HasValue) rect.anchorMax = anchorMax.Value;
         rect.anchoredPosition = position;
         rect.sizeDelta = new Vector2(width, height);
+
         Image img = btnObj.AddComponent<Image>();
         img.sprite = sprite;
         img.type = Image.Type.Sliced;
-        img.color = bgColor;
+        img.color = topColor;
+
+        // Add gradient overlay
+        GameObject gradientObj = new GameObject("Gradient");
+        gradientObj.transform.SetParent(btnObj.transform, false);
+        RectTransform gRect = gradientObj.AddComponent<RectTransform>();
+        gRect.anchorMin = Vector2.zero;
+        gRect.anchorMax = Vector2.one;
+        gRect.sizeDelta = Vector2.zero;
+        gRect.anchoredPosition = Vector2.zero;
+        Image gImg = gradientObj.AddComponent<Image>();
+        gImg.sprite = UISpriteGenerator.CreateGradient(128, 128, new Color(1, 1, 1, 0.15f), new Color(0, 0, 0, 0.15f));
+        gImg.type = Image.Type.Simple;
+        gImg.raycastTarget = false;
+
         btnObj.AddComponent<Button>();
 
         GameObject textObj = new GameObject("Text");
@@ -483,6 +548,7 @@ public class ProjectSetup : MonoBehaviour
         tmp.fontStyle = FontStyles.Bold;
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.color = Color.white;
+        if (gameFontAsset != null) tmp.font = gameFontAsset;
 
         return btnObj;
     }
