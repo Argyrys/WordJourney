@@ -36,11 +36,13 @@ public class CircularLetterWheel : MonoBehaviour, IPointerDownHandler, IDragHand
     private char[] wheelChars;
 
     private LineRenderer lineRenderer;
+    private Sprite circleSprite;
 
     private void Awake()
     {
         Instance = this;
         SetupLineRenderer();
+        circleSprite = UISpriteGenerator.CreateCircle(128, Color.white);
     }
 
     private void SetupLineRenderer()
@@ -101,10 +103,12 @@ public class CircularLetterWheel : MonoBehaviour, IPointerDownHandler, IDragHand
         sRect.sizeDelta = new Vector2(3, -3);
         sRect.anchoredPosition = new Vector2(2, -2);
         Image sImg = shadowObj.AddComponent<Image>();
+        sImg.sprite = circleSprite;
         sImg.color = new Color(0, 0, 0, 0.3f);
         shadowObj.transform.SetAsFirstSibling();
 
         Image bg = obj.AddComponent<Image>();
+        bg.sprite = circleSprite;
         bg.color = letterColors[index % letterColors.Length];
 
         GameObject textObj = new GameObject("Text");

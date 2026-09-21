@@ -16,10 +16,12 @@ public class CrosswordDisplay : MonoBehaviour
     public Color foundTextColor = Color.white;
 
     private List<WordSlot> wordSlots = new List<WordSlot>();
+    private Sprite roundedSprite;
 
     private void Awake()
     {
         Instance = this;
+        roundedSprite = UISpriteGenerator.CreateRoundedRect(128, 128, 16, Color.white);
     }
 
     public void SetupWords(List<string> targetWords)
@@ -102,10 +104,14 @@ public class CrosswordDisplay : MonoBehaviour
         sRect.sizeDelta = new Vector2(2, -2);
         sRect.anchoredPosition = new Vector2(1, -1);
         Image sImg = shadowObj.AddComponent<Image>();
+        sImg.sprite = roundedSprite;
+        sImg.type = Image.Type.Sliced;
         sImg.color = new Color(0, 0, 0, 0.2f);
         shadowObj.transform.SetAsFirstSibling();
 
         Image bg = slotObj.AddComponent<Image>();
+        bg.sprite = roundedSprite;
+        bg.type = Image.Type.Sliced;
         bg.color = emptySlotColor;
 
         GameObject textObj = new GameObject("Text");
