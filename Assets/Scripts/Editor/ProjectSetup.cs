@@ -18,6 +18,15 @@ public class ProjectSetup : MonoBehaviour
     [MenuItem("Tools/Setup WordJourney Project")]
     public static void SetupProject()
     {
+        if (Application.isPlaying)
+        {
+            EditorUtility.DisplayDialog("Setup Failed",
+                "Please exit Play Mode first, then run Tools > Setup WordJourney Project.",
+                "OK");
+            Debug.LogError("Cannot run setup during Play Mode. Exit Play Mode and try again.");
+            return;
+        }
+
         GenerateSprites();
         LoadFont();
         CreateMenuScene();
