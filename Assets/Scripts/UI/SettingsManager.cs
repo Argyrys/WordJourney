@@ -107,7 +107,7 @@ public class SettingsManager : MonoBehaviour
         creditsPanel.SetActive(true);
     }
 
-    private void OnCloseCreditsClicked()
+    public void OnCloseCreditsClicked()
     {
         creditsPanel.SetActive(false);
     }
