@@ -63,50 +63,63 @@ public class ProjectSetup : MonoBehaviour
         Color darkBg = new Color(0.03f, 0.25f, 0.32f);
         Color accentGreen = new Color(0.30f, 0.78f, 0.40f);
         Color accentGold = new Color(1f, 0.78f, 0.15f);
+        Color panelBg = new Color(0.03f, 0.22f, 0.28f, 0.97f);
 
         CreateBackground(canvas, bgColor);
 
         GameObject managerObj = new GameObject("MenuManager");
-        managerObj.AddComponent<MenuManager>();
-        managerObj.AddComponent<AudioManager>();
+        MenuManager menuManager = managerObj.AddComponent<MenuManager>();
+        ShopManager shopManager = managerObj.AddComponent<ShopManager>();
+        SettingsManager settingsManager = managerObj.AddComponent<SettingsManager>();
+        shopManager.menuManager = menuManager;
+        settingsManager.menuManager = menuManager;
 
         GameObject fontManagerObj = new GameObject("FontManager");
         FontManager fontManager = fontManagerObj.AddComponent<FontManager>();
         fontManager.gameFont = gameFontAsset;
 
-        GameObject titleShadow1 = CreateText(canvas.transform, "TitleShadow1", "WORD", 84, new Vector2(3, 253));
+        // ===================== Main Menu Panel =====================
+        GameObject mainMenuPanel = CreateRoundedPanel(canvas.transform, "MainMenuPanel", new Vector2(1080, 1920), roundedLarge, new Color(0, 0, 0, 0));
+        RectTransform mpRect = mainMenuPanel.GetComponent<RectTransform>();
+        mpRect.anchorMin = Vector2.zero;
+        mpRect.anchorMax = Vector2.one;
+        mpRect.sizeDelta = Vector2.zero;
+        mpRect.anchoredPosition = Vector2.zero;
+        mainMenuPanel.GetComponent<Image>().raycastTarget = false;
+
+        GameObject titleShadow1 = CreateText(mainMenuPanel.transform, "TitleShadow1", "WORD", 84, new Vector2(3, 253));
         titleShadow1.GetComponent<TextMeshProUGUI>().color = new Color(0, 0, 0, 0.35f);
-        GameObject title1 = CreateText(canvas.transform, "TitleText", "WORD", 82, new Vector2(0, 250));
+        GameObject title1 = CreateText(mainMenuPanel.transform, "TitleText", "WORD", 82, new Vector2(0, 250));
         title1.GetComponent<TextMeshProUGUI>().fontStyle = FontStyles.Bold;
 
-        GameObject titleShadow2 = CreateText(canvas.transform, "TitleShadow2", "JOURNEY", 84, new Vector2(3, 173));
+        GameObject titleShadow2 = CreateText(mainMenuPanel.transform, "TitleShadow2", "JOURNEY", 84, new Vector2(3, 173));
         titleShadow2.GetComponent<TextMeshProUGUI>().color = new Color(0, 0, 0, 0.35f);
-        GameObject title2 = CreateText(canvas.transform, "TitleText2", "JOURNEY", 82, new Vector2(0, 170));
+        GameObject title2 = CreateText(mainMenuPanel.transform, "TitleText2", "JOURNEY", 82, new Vector2(0, 170));
         title2.GetComponent<TextMeshProUGUI>().fontStyle = FontStyles.Bold;
         title2.GetComponent<TextMeshProUGUI>().color = accentGold;
 
-        GameObject statsPanel = CreateRoundedPanel(canvas.transform, "StatsPanel", new Vector2(800, 55), roundedMed, darkBg);
+        GameObject statsPanel = CreateRoundedPanel(mainMenuPanel.transform, "StatsPanel", new Vector2(800, 55), roundedMed, darkBg);
         RectTransform spRect = statsPanel.GetComponent<RectTransform>();
         spRect.anchorMin = new Vector2(0.5f, 0.5f);
         spRect.anchorMax = new Vector2(0.5f, 0.5f);
         spRect.anchoredPosition = new Vector2(0, 330);
 
-        GameObject coinsT = CreateText(statsPanel.transform, "CoinsText", "\u25CF 0", 22, new Vector2(-220, 0));
+        GameObject coinsT = CreateText(statsPanel.transform, "CoinsText", "\u25CF 0", 24, new Vector2(-220, 0));
         coinsT.GetComponent<TextMeshProUGUI>().color = accentGold;
-        GameObject streakT = CreateText(statsPanel.transform, "StreakText", "Streak: 0", 20, new Vector2(0, 0));
-        GameObject levelT = CreateText(statsPanel.transform, "LevelText", "Level 1", 20, new Vector2(220, 0));
+        GameObject streakT = CreateText(statsPanel.transform, "StreakText", "Streak: 0", 22, new Vector2(0, 0));
+        GameObject levelT = CreateText(statsPanel.transform, "LevelText", "Level 1", 22, new Vector2(220, 0));
 
-        GameObject playButton = CreateGradientButton(canvas.transform, "PlayButton", "PLAY", new Vector2(0, 30), accentGreen, new Color(0.18f, 0.60f, 0.28f), 340, 90, roundedLarge, fontSize: 36);
-        GameObject levelsButton = CreateGradientButton(canvas.transform, "LevelsButton", "LEVELS", new Vector2(0, -80), new Color(0.18f, 0.48f, 0.90f), new Color(0.12f, 0.35f, 0.75f), 340, 75, roundedMed, fontSize: 28);
-        GameObject shopButton = CreateGradientButton(canvas.transform, "ShopButton", "SHOP", new Vector2(0, -175), accentGold, new Color(0.80f, 0.60f, 0.10f), 340, 75, roundedMed, fontSize: 28);
-        GameObject settingsButton = CreateGradientButton(canvas.transform, "SettingsButton", "SETTINGS", new Vector2(0, -265), new Color(0.40f, 0.45f, 0.55f), new Color(0.30f, 0.35f, 0.45f), 340, 75, roundedMed, fontSize: 28);
+        GameObject playButton = CreateGradientButton(mainMenuPanel.transform, "PlayButton", "PLAY", new Vector2(0, 30), accentGreen, new Color(0.18f, 0.60f, 0.28f), 340, 90, roundedLarge, fontSize: 36);
+        GameObject levelsButton = CreateGradientButton(mainMenuPanel.transform, "LevelsButton", "LEVELS", new Vector2(0, -80), new Color(0.18f, 0.48f, 0.90f), new Color(0.12f, 0.35f, 0.75f), 340, 75, roundedMed, fontSize: 28);
+        GameObject shopButton = CreateGradientButton(mainMenuPanel.transform, "ShopButton", "SHOP", new Vector2(0, -175), accentGold, new Color(0.80f, 0.60f, 0.10f), 340, 75, roundedMed, fontSize: 28);
+        GameObject settingsButton = CreateGradientButton(mainMenuPanel.transform, "SettingsButton", "SETTINGS", new Vector2(0, -265), new Color(0.40f, 0.45f, 0.55f), new Color(0.30f, 0.35f, 0.45f), 340, 75, roundedMed, fontSize: 28);
 
         AddButtonShadow(playButton);
         AddButtonShadow(levelsButton);
         AddButtonShadow(shopButton);
         AddButtonShadow(settingsButton);
 
-        MenuManager menuManager = managerObj.GetComponent<MenuManager>();
+        menuManager.mainMenuPanel = mainMenuPanel;
         menuManager.coinsText = coinsT.GetComponent<TextMeshProUGUI>();
         menuManager.streakText = streakT.GetComponent<TextMeshProUGUI>();
         menuManager.highLevelText = levelT.GetComponent<TextMeshProUGUI>();
@@ -115,7 +128,349 @@ public class ProjectSetup : MonoBehaviour
         menuManager.shopButton = shopButton.GetComponent<Button>();
         menuManager.settingsButton = settingsButton.GetComponent<Button>();
 
+        // ===================== Level Select Panel =====================
+        GameObject levelSelectPanel = CreateRoundedPanel(canvas.transform, "LevelSelectPanel", new Vector2(1080, 1920), roundedLarge, panelBg);
+        RectTransform lsRect = levelSelectPanel.GetComponent<RectTransform>();
+        lsRect.anchorMin = Vector2.zero;
+        lsRect.anchorMax = Vector2.one;
+        lsRect.sizeDelta = Vector2.zero;
+        lsRect.anchoredPosition = Vector2.zero;
+
+        GameObject lsBack = CreateGradientButton(levelSelectPanel.transform, "LSBackButton", "< BACK", new Vector2(-340, 760), new Color(0.35f, 0.40f, 0.50f), new Color(0.20f, 0.25f, 0.35f), 200, 60, roundedMed, fontSize: 22);
+        AddButtonShadow(lsBack);
+        lsBack.GetComponent<Button>().onClick.AddListener(() => menuManager.BackToMainMenu());
+
+        CreateText(levelSelectPanel.transform, "LSHeader", "SELECT LEVEL", 40, new Vector2(0, 760)).GetComponent<TextMeshProUGUI>().fontStyle = FontStyles.Bold;
+
+        GameObject pageText = CreateText(levelSelectPanel.transform, "PageText", "Page 1", 22, new Vector2(0, 620));
+        pageText.GetComponent<TextMeshProUGUI>().color = new Color(0.7f, 0.8f, 0.85f);
+
+        GameObject prevPage = CreateGradientButton(levelSelectPanel.transform, "PrevPage", "<", new Vector2(-400, 620), new Color(0.25f, 0.45f, 0.55f), new Color(0.12f, 0.30f, 0.40f), 90, 50, roundedMed, fontSize: 26);
+        AddButtonShadow(prevPage);
+        prevPage.GetComponent<Button>().onClick.AddListener(() => menuManager.PreviousPage());
+        GameObject nextPage = CreateGradientButton(levelSelectPanel.transform, "NextPage", ">", new Vector2(400, 620), new Color(0.25f, 0.45f, 0.55f), new Color(0.12f, 0.30f, 0.40f), 90, 50, roundedMed, fontSize: 26);
+        AddButtonShadow(nextPage);
+        nextPage.GetComponent<Button>().onClick.AddListener(() => menuManager.NextPage());
+
+        GameObject levelGrid = new GameObject("LevelGrid");
+        levelGrid.transform.SetParent(levelSelectPanel.transform, false);
+        RectTransform lgRect = levelGrid.AddComponent<RectTransform>();
+        lgRect.anchorMin = new Vector2(0.5f, 0.5f);
+        lgRect.anchorMax = new Vector2(0.5f, 0.5f);
+        lgRect.anchoredPosition = new Vector2(0, 180);
+        lgRect.sizeDelta = new Vector2(900, 780);
+        GridLayoutGroup gridGroup = levelGrid.AddComponent<GridLayoutGroup>();
+        gridGroup.cellSize = new Vector2(200, 200);
+        gridGroup.spacing = new Vector2(20, 20);
+        gridGroup.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+        gridGroup.constraintCount = 4;
+
+        GameObject levelButtonPrefab = CreateLevelButtonPrefab();
+
+        menuManager.levelSelectPanel = levelSelectPanel;
+        menuManager.levelButtonParent = levelGrid.transform;
+        menuManager.levelButtonPrefab = levelButtonPrefab;
+        menuManager.pageText = pageText.GetComponent<TextMeshProUGUI>();
+
+        // ===================== Shop Panel =====================
+        GameObject shopPanel = CreateRoundedPanel(canvas.transform, "ShopPanel", new Vector2(1080, 1920), roundedLarge, panelBg);
+        RectTransform shRect = shopPanel.GetComponent<RectTransform>();
+        shRect.anchorMin = Vector2.zero;
+        shRect.anchorMax = Vector2.one;
+        shRect.sizeDelta = Vector2.zero;
+        shRect.anchoredPosition = Vector2.zero;
+
+        GameObject shBack = CreateGradientButton(shopPanel.transform, "ShopBackButton", "< BACK", new Vector2(-340, 760), new Color(0.35f, 0.40f, 0.50f), new Color(0.20f, 0.25f, 0.35f), 200, 60, roundedMed, fontSize: 22);
+        AddButtonShadow(shBack);
+        shBack.GetComponent<Button>().onClick.AddListener(() => menuManager.BackToMainMenu());
+
+        CreateText(shopPanel.transform, "ShopHeader", "SHOP", 40, new Vector2(0, 760)).GetComponent<TextMeshProUGUI>().fontStyle = FontStyles.Bold;
+
+        GameObject removeAdsBtn = CreateGradientButton(shopPanel.transform, "RemoveAdsBtn", "REMOVE ADS", new Vector2(0, 580), new Color(0.85f, 0.30f, 0.35f), new Color(0.60f, 0.15f, 0.20f), 700, 85, roundedMed, fontSize: 26);
+        AddButtonShadow(removeAdsBtn);
+        GameObject removeAdsPrice = CreateText(removeAdsBtn.transform, "Price", "$0.00", 22, new Vector2(-250, 0));
+        removeAdsPrice.GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.Right;
+
+        GameObject coinsSmallBtn = CreateGradientButton(shopPanel.transform, "CoinsSmallBtn", "100 COINS", new Vector2(0, 440), accentGold, new Color(0.80f, 0.55f, 0.08f), 700, 85, roundedMed, fontSize: 26);
+        AddButtonShadow(coinsSmallBtn);
+        GameObject coinsSmallPrice = CreateText(coinsSmallBtn.transform, "Price", "$0.99", 22, new Vector2(-250, 0));
+        coinsSmallPrice.GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.Right;
+
+        GameObject coinsMedBtn = CreateGradientButton(shopPanel.transform, "CoinsMediumBtn", "500 COINS", new Vector2(0, 310), accentGold, new Color(0.80f, 0.55f, 0.08f), 700, 85, roundedMed, fontSize: 26);
+        AddButtonShadow(coinsMedBtn);
+        GameObject coinsMedPrice = CreateText(coinsMedBtn.transform, "Price", "$3.99", 22, new Vector2(-250, 0));
+        coinsMedPrice.GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.Right;
+
+        GameObject coinsLargeBtn = CreateGradientButton(shopPanel.transform, "CoinsLargeBtn", "1500 COINS", new Vector2(0, 180), accentGold, new Color(0.80f, 0.55f, 0.08f), 700, 85, roundedMed, fontSize: 26);
+        AddButtonShadow(coinsLargeBtn);
+        GameObject coinsLargePrice = CreateText(coinsLargeBtn.transform, "Price", "$9.99", 22, new Vector2(-250, 0));
+        coinsLargePrice.GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.Right;
+
+        GameObject hintsSmallBtn = CreateGradientButton(shopPanel.transform, "HintsSmallBtn", "5 HINTS", new Vector2(0, 50), new Color(0.40f, 0.65f, 0.90f), new Color(0.25f, 0.45f, 0.70f), 700, 85, roundedMed, fontSize: 26);
+        AddButtonShadow(hintsSmallBtn);
+        GameObject hintsSmallPrice = CreateText(hintsSmallBtn.transform, "Price", "$1.49", 22, new Vector2(-250, 0));
+        hintsSmallPrice.GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.Right;
+
+        GameObject hintsMedBtn = CreateGradientButton(shopPanel.transform, "HintsMediumBtn", "15 HINTS", new Vector2(0, -80), new Color(0.40f, 0.65f, 0.90f), new Color(0.25f, 0.45f, 0.70f), 700, 85, roundedMed, fontSize: 26);
+        AddButtonShadow(hintsMedBtn);
+        GameObject hintsMedPrice = CreateText(hintsMedBtn.transform, "Price", "$3.49", 22, new Vector2(-250, 0));
+        hintsMedPrice.GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.Right;
+
+        GameObject coinBalance = CreateRoundedPanel(shopPanel.transform, "ShopCoinBalance", new Vector2(300, 55), roundedSmall, darkBg);
+        RectTransform cbRect = coinBalance.GetComponent<RectTransform>();
+        cbRect.anchorMin = new Vector2(0.5f, 0);
+        cbRect.anchorMax = new Vector2(0.5f, 0);
+        cbRect.anchoredPosition = new Vector2(0, 220);
+        CreateText(coinBalance.transform, "ShopCoins", "\u25CF 0", 24, Vector2.zero).GetComponent<TextMeshProUGUI>();
+        shopManager.coinsBalanceText = coinBalance.transform.Find("ShopCoins").GetComponent<TextMeshProUGUI>();
+
+        shopManager.removeAdsButton = removeAdsBtn.GetComponent<Button>();
+        shopManager.coinsSmallButton = coinsSmallBtn.GetComponent<Button>();
+        shopManager.coinsMediumButton = coinsMedBtn.GetComponent<Button>();
+        shopManager.coinsLargeButton = coinsLargeBtn.GetComponent<Button>();
+        shopManager.hintsSmallButton = hintsSmallBtn.GetComponent<Button>();
+        shopManager.hintsMediumButton = hintsMedBtn.GetComponent<Button>();
+
+        shopManager.removeAdsPrice = removeAdsPrice.GetComponent<TextMeshProUGUI>();
+        shopManager.coinsSmallPrice = coinsSmallPrice.GetComponent<TextMeshProUGUI>();
+        shopManager.coinsMediumPrice = coinsMedPrice.GetComponent<TextMeshProUGUI>();
+        shopManager.coinsLargePrice = coinsLargePrice.GetComponent<TextMeshProUGUI>();
+        shopManager.hintsSmallPrice = hintsSmallPrice.GetComponent<TextMeshProUGUI>();
+        shopManager.hintsMediumPrice = hintsMedPrice.GetComponent<TextMeshProUGUI>();
+
+        menuManager.shopPanel = shopPanel;
+
+        // ===================== Settings Panel =====================
+        GameObject settingsPanel = CreateRoundedPanel(canvas.transform, "SettingsPanel", new Vector2(1080, 1920), roundedLarge, panelBg);
+        RectTransform stRect = settingsPanel.GetComponent<RectTransform>();
+        stRect.anchorMin = Vector2.zero;
+        stRect.anchorMax = Vector2.one;
+        stRect.sizeDelta = Vector2.zero;
+        stRect.anchoredPosition = Vector2.zero;
+
+        GameObject stBack = CreateGradientButton(settingsPanel.transform, "SettingsBackButton", "< BACK", new Vector2(-340, 760), new Color(0.35f, 0.40f, 0.50f), new Color(0.20f, 0.25f, 0.35f), 200, 60, roundedMed, fontSize: 22);
+        AddButtonShadow(stBack);
+        stBack.GetComponent<Button>().onClick.AddListener(() => menuManager.BackToMainMenu());
+
+        CreateText(settingsPanel.transform, "SettingsHeader", "SETTINGS", 40, new Vector2(0, 760)).GetComponent<TextMeshProUGUI>().fontStyle = FontStyles.Bold;
+
+        CreateText(settingsPanel.transform, "MusicLabel", "Music", 28, new Vector2(-280, 540));
+        GameObject musicRow = CreateRoundedPanel(settingsPanel.transform, "MusicRow", new Vector2(760, 90), roundedMed, darkBg);
+        RectTransform mrRect = musicRow.GetComponent<RectTransform>();
+        mrRect.anchorMin = new Vector2(0.5f, 0.5f);
+        mrRect.anchorMax = new Vector2(0.5f, 0.5f);
+        mrRect.anchoredPosition = new Vector2(0, 540);
+        GameObject musicSliderObj = new GameObject("MusicSlider");
+        musicSliderObj.transform.SetParent(musicRow.transform, false);
+        RectTransform msRect = musicSliderObj.AddComponent<RectTransform>();
+        msRect.anchorMin = new Vector2(0, 0.5f);
+        msRect.anchorMax = new Vector2(0.7f, 0.5f);
+        msRect.sizeDelta = new Vector2(-60, 40);
+        msRect.anchoredPosition = new Vector2(10, 0);
+        Slider musicSlider = musicSliderObj.AddComponent<Slider>();
+
+        GameObject musicToggleObj = new GameObject("MusicToggle");
+        musicToggleObj.transform.SetParent(musicRow.transform, false);
+        RectTransform mtRect = musicToggleObj.AddComponent<RectTransform>();
+        mtRect.anchorMin = new Vector2(1, 0.5f);
+        mtRect.anchorMax = new Vector2(1, 0.5f);
+        mtRect.sizeDelta = new Vector2(50, 50);
+        mtRect.anchoredPosition = new Vector2(-60, 0);
+        Image mtBg = musicToggleObj.AddComponent<Image>();
+        mtBg.sprite = circle;
+        Image mtCheck = new GameObject("Check").AddComponent<Image>();
+        mtCheck.transform.SetParent(musicToggleObj.transform, false);
+        mtCheck.sprite = circle;
+        Toggle musicToggle = musicToggleObj.AddComponent<Toggle>();
+        musicToggle.targetGraphic = mtBg;
+        musicToggle.graphic = mtCheck;
+
+        CreateText(settingsPanel.transform, "SFXLabel", "Sound FX", 28, new Vector2(-280, 430));
+        GameObject sfxRow = CreateRoundedPanel(settingsPanel.transform, "SFXRow", new Vector2(760, 90), roundedMed, darkBg);
+        RectTransform sfxrRect = sfxRow.GetComponent<RectTransform>();
+        sfxrRect.anchorMin = new Vector2(0.5f, 0.5f);
+        sfxrRect.anchorMax = new Vector2(0.5f, 0.5f);
+        sfxrRect.anchoredPosition = new Vector2(0, 430);
+        GameObject sfxSliderObj = new GameObject("SFXSlider");
+        sfxSliderObj.transform.SetParent(sfxRow.transform, false);
+        RectTransform ssRect = sfxSliderObj.AddComponent<RectTransform>();
+        ssRect.anchorMin = new Vector2(0, 0.5f);
+        ssRect.anchorMax = new Vector2(0.7f, 0.5f);
+        ssRect.sizeDelta = new Vector2(-60, 40);
+        ssRect.anchoredPosition = new Vector2(10, 0);
+        Slider sfxSlider = sfxSliderObj.AddComponent<Slider>();
+
+        GameObject sfxToggleObj = new GameObject("SFXToggle");
+        sfxToggleObj.transform.SetParent(sfxRow.transform, false);
+        RectTransform sftRect = sfxToggleObj.AddComponent<RectTransform>();
+        sftRect.anchorMin = new Vector2(1, 0.5f);
+        sftRect.anchorMax = new Vector2(1, 0.5f);
+        sftRect.sizeDelta = new Vector2(50, 50);
+        sftRect.anchoredPosition = new Vector2(-60, 0);
+        Image sftBg = sfxToggleObj.AddComponent<Image>();
+        sftBg.sprite = circle;
+        Image sftCheck = new GameObject("Check").AddComponent<Image>();
+        sftCheck.transform.SetParent(sfxToggleObj.transform, false);
+        sftCheck.sprite = circle;
+        Toggle sfxToggle = sfxToggleObj.AddComponent<Toggle>();
+        sfxToggle.targetGraphic = sftBg;
+        sfxToggle.graphic = sftCheck;
+
+        GameObject notifRow = CreateRoundedPanel(settingsPanel.transform, "NotificationsRow", new Vector2(760, 90), roundedMed, darkBg);
+        RectTransform nrRect = notifRow.GetComponent<RectTransform>();
+        nrRect.anchorMin = new Vector2(0.5f, 0.5f);
+        nrRect.anchorMax = new Vector2(0.5f, 0.5f);
+        nrRect.anchoredPosition = new Vector2(0, 320);
+        CreateText(notifRow.transform, "NotificationsLabel", "Notifications", 28, new Vector2(-240, 0));
+        GameObject notifToggleObj = new GameObject("NotificationsToggle");
+        notifToggleObj.transform.SetParent(notifRow.transform, false);
+        RectTransform ntRect = notifToggleObj.AddComponent<RectTransform>();
+        ntRect.anchorMin = new Vector2(1, 0.5f);
+        ntRect.anchorMax = new Vector2(1, 0.5f);
+        ntRect.sizeDelta = new Vector2(50, 50);
+        ntRect.anchoredPosition = new Vector2(-60, 0);
+        Image ntBg = notifToggleObj.AddComponent<Image>();
+        ntBg.sprite = circle;
+        Image ntCheck = new GameObject("Check").AddComponent<Image>();
+        ntCheck.transform.SetParent(notifToggleObj.transform, false);
+        ntCheck.sprite = circle;
+        Toggle notificationsToggle = notifToggleObj.AddComponent<Toggle>();
+        notificationsToggle.targetGraphic = ntBg;
+        notificationsToggle.graphic = ntCheck;
+
+        GameObject resetProgressBtn = CreateGradientButton(settingsPanel.transform, "ResetProgressBtn", "RESET PROGRESS", new Vector2(0, 150), new Color(0.75f, 0.30f, 0.30f), new Color(0.50f, 0.15f, 0.15f), 500, 70, roundedMed, fontSize: 24);
+        AddButtonShadow(resetProgressBtn);
+        GameObject creditsBtn = CreateGradientButton(settingsPanel.transform, "CreditsBtn", "CREDITS", new Vector2(0, 50), new Color(0.35f, 0.45f, 0.55f), new Color(0.20f, 0.30f, 0.40f), 500, 70, roundedMed, fontSize: 24);
+        AddButtonShadow(creditsBtn);
+
+        GameObject creditsPanel = CreateRoundedPanel(settingsPanel.transform, "CreditsPanel", new Vector2(700, 500), roundedLarge, new Color(0.03f, 0.15f, 0.20f, 0.98f));
+        RectTransform cRect = creditsPanel.GetComponent<RectTransform>();
+        cRect.anchorMin = new Vector2(0.5f, 0.5f);
+        cRect.anchorMax = new Vector2(0.5f, 0.5f);
+        cRect.anchoredPosition = Vector2.zero;
+        CreateText(creditsPanel.transform, "CreditsTitle", "CREDITS", 36, new Vector2(0, 160)).GetComponent<TextMeshProUGUI>().fontStyle = FontStyles.Bold;
+        CreateText(creditsPanel.transform, "CreditsBody",
+            "WORD JOURNEY\n\nA word puzzle adventure!\n\nDeveloped with Unity\nDesigned as a Wordscapes-style\nword game for mobile.", 28, new Vector2(0, 20));
+        GameObject closeCreditsBtn = CreateGradientButton(creditsPanel.transform, "CloseCreditsBtn", "CLOSE", new Vector2(0, -170), accentGreen, new Color(0.18f, 0.60f, 0.28f), 250, 60, roundedMed, fontSize: 22);
+        AddButtonShadow(closeCreditsBtn);
+        closeCreditsBtn.GetComponent<Button>().onClick.AddListener(() => settingsManager.OnCloseCreditsClicked());
+        creditsPanel.SetActive(false);
+
+        settingsManager.musicSlider = musicSlider;
+        settingsManager.sfxSlider = sfxSlider;
+        settingsManager.musicToggle = musicToggle;
+        settingsManager.sfxToggle = sfxToggle;
+        settingsManager.notificationsToggle = notificationsToggle;
+        settingsManager.resetProgressButton = resetProgressBtn.GetComponent<Button>();
+        settingsManager.creditsButton = creditsBtn.GetComponent<Button>();
+        settingsManager.creditsPanel = creditsPanel;
+        settingsManager.closeCreditsButton = closeCreditsBtn.GetComponent<Button>();
+
+        menuManager.settingsPanel = settingsPanel;
+
+        // ===================== Finalize =====================
+        mainMenuPanel.SetActive(true);
+        levelSelectPanel.SetActive(false);
+        shopPanel.SetActive(false);
+        settingsPanel.SetActive(false);
+
         EditorSceneManager.SaveScene(scene, "Assets/Scenes/MenuScene.unity");
+    }
+
+    static GameObject CreateLevelButtonPrefab()
+    {
+        GameObject btnObj = new GameObject("LevelButton");
+
+        RectTransform rect = btnObj.AddComponent<RectTransform>();
+        rect.sizeDelta = new Vector2(200, 200);
+
+        Image img = btnObj.AddComponent<Image>();
+        img.sprite = roundedMed;
+        img.type = Image.Type.Sliced;
+        img.color = new Color(0.25f, 0.45f, 0.55f, 0.9f);
+
+        btnObj.AddComponent<Button>();
+
+        GameObject textObj = new GameObject("LevelNumber");
+        textObj.transform.SetParent(btnObj.transform, false);
+        RectTransform textRect = textObj.AddComponent<RectTransform>();
+        textRect.anchorMin = Vector2.zero;
+        textRect.anchorMax = Vector2.one;
+        textRect.sizeDelta = Vector2.zero;
+        textRect.anchoredPosition = new Vector2(0, 10);
+        TextMeshProUGUI tmp = textObj.AddComponent<TextMeshProUGUI>();
+        tmp.text = "1";
+        tmp.fontSize = 40;
+        tmp.fontStyle = FontStyles.Bold;
+        tmp.alignment = TextAlignmentOptions.Center;
+        tmp.color = Color.white;
+
+        GameObject starsObj = new GameObject("Stars");
+        starsObj.transform.SetParent(btnObj.transform, false);
+        RectTransform starCont = starsObj.AddComponent<RectTransform>();
+        starCont.anchorMin = new Vector2(0.5f, 0);
+        starCont.anchorMax = new Vector2(0.5f, 0);
+        starCont.anchoredPosition = new Vector2(0, 12);
+        starCont.sizeDelta = new Vector2(150, 30);
+
+        GameObject lockObj = new GameObject("LockIcon");
+        lockObj.transform.SetParent(btnObj.transform, false);
+        RectTransform lockRect = lockObj.AddComponent<RectTransform>();
+        lockRect.anchorMin = new Vector2(0.5f, 0.5f);
+        lockRect.anchorMax = new Vector2(0.5f, 0.5f);
+        lockRect.sizeDelta = new Vector2(60, 60);
+        lockRect.anchoredPosition = Vector2.zero;
+        Image lockImg = lockObj.AddComponent<Image>();
+        lockImg.sprite = circle;
+        lockImg.color = Color.white;
+        GameObject lockText = new GameObject("LockText");
+        lockText.transform.SetParent(lockObj.transform, false);
+        RectTransform ltRect = lockText.AddComponent<RectTransform>();
+        ltRect.anchorMin = Vector2.zero;
+        ltRect.anchorMax = Vector2.one;
+        ltRect.sizeDelta = Vector2.zero;
+        TextMeshProUGUI ltmp = lockText.AddComponent<TextMeshProUGUI>();
+        ltmp.text = "\uD83D\uDD12";
+        ltmp.fontSize = 34;
+        ltmp.alignment = TextAlignmentOptions.Center;
+        ltmp.color = Color.white;
+
+        Image[] stars = new Image[3];
+        for (int i = 0; i < 3; i++)
+        {
+            GameObject starObj = new GameObject($"Star{i}");
+            starObj.transform.SetParent(starsObj.transform, false);
+            RectTransform sRect = starObj.AddComponent<RectTransform>();
+            sRect.anchoredPosition = new Vector2((i - 1) * 55f, 0);
+            sRect.sizeDelta = new Vector2(35, 30);
+            Image starImg = starObj.AddComponent<Image>();
+            starImg.sprite = UISpriteGenerator.CreateStar(64, Color.white);
+            starImg.color = new Color(0.4f, 0.4f, 0.4f);
+            stars[i] = starImg;
+            TextMeshProUGUI starT = new GameObject("T").AddComponent<TextMeshProUGUI>();
+            starT.transform.SetParent(starObj.transform, false);
+            starT.text = "\u2605";
+            starT.fontSize = 24;
+            starT.alignment = TextAlignmentOptions.Center;
+            RectTransform stRect = starT.GetComponent<RectTransform>();
+            stRect.anchorMin = Vector2.zero;
+            stRect.anchorMax = Vector2.one;
+            stRect.sizeDelta = Vector2.zero;
+        }
+
+        LevelButton lb = btnObj.AddComponent<LevelButton>();
+        lb.levelText = tmp;
+        lb.starsImages = stars;
+        lb.button = btnObj.GetComponent<Button>();
+        lb.lockImage = lockImg;
+
+        string prefabPath = "Assets/Prefabs/LevelButton.prefab";
+        if (!AssetDatabase.IsValidFolder("Assets/Prefabs"))
+            AssetDatabase.CreateFolder("Assets", "Prefabs");
+
+        GameObject prefab = PrefabUtility.SaveAsPrefabAsset(btnObj, prefabPath);
+        Object.DestroyImmediate(btnObj);
+        return prefab;
     }
 
     static void CreateGameScene()
@@ -137,13 +492,7 @@ public class ProjectSetup : MonoBehaviour
         CreateBackground(canvas, bgColor);
 
         GameObject managerObj = new GameObject("GameManager");
-        managerObj.AddComponent<GameManager>();
         managerObj.AddComponent<LevelManager>();
-        managerObj.AddComponent<WordValidator>();
-        managerObj.AddComponent<WordDatabase>();
-        managerObj.AddComponent<AdsManager>();
-        managerObj.AddComponent<IAPManager>();
-        managerObj.AddComponent<AudioManager>();
 
         GameObject fontManagerObj = new GameObject("FontManager");
         FontManager fontManager = fontManagerObj.AddComponent<FontManager>();
@@ -152,13 +501,18 @@ public class ProjectSetup : MonoBehaviour
         GameObject uiManagerObj = new GameObject("UIManager");
         UIManager uiManager = uiManagerObj.AddComponent<UIManager>();
 
-        // Top bar with rounded corners
+        // Top bar
         GameObject topBar = CreateRoundedPanel(canvas.transform, "TopBar", new Vector2(1080, 120), roundedMed, topBarBg);
         RectTransform topRect = topBar.GetComponent<RectTransform>();
         topRect.anchorMin = new Vector2(0, 1);
         topRect.anchorMax = new Vector2(1, 1);
         topRect.sizeDelta = new Vector2(0, 120);
         topRect.anchoredPosition = new Vector2(0, -60);
+
+        GameObject backBtn = CreateGradientButton(topBar.transform, "BackButton", "< MENU", new Vector2(-380, 20), new Color(0.25f, 0.35f, 0.45f), new Color(0.12f, 0.20f, 0.28f), 150, 50, roundedMed, fontSize: 18);
+        AddButtonShadow(backBtn);
+        backBtn.GetComponent<Button>().onClick.AddListener(() => GameManager.Instance.ReturnToMenu());
+        uiManager.backButton = backBtn.GetComponent<Button>();
 
         GameObject topBottomLine = CreatePanel(topBar.transform, "TopLine", new Vector2(1080, 3));
         RectTransform tblRect = topBottomLine.GetComponent<RectTransform>();
@@ -181,9 +535,13 @@ public class ProjectSetup : MonoBehaviour
         coinIcon.GetComponent<TextMeshProUGUI>().color = accentGold;
         GameObject coinsT = CreateText(coinsArea.transform, "CoinsText", "0", 20, new Vector2(10, 0));
         coinsT.GetComponent<TextMeshProUGUI>().fontStyle = FontStyles.Bold;
-        GameObject plusBtn = CreateText(coinsArea.transform, "PlusBtn", "+", 18, new Vector2(60, 0));
-        plusBtn.GetComponent<TextMeshProUGUI>().color = accentGreen;
-        plusBtn.GetComponent<TextMeshProUGUI>().fontStyle = FontStyles.Bold;
+
+        GameObject plusBtn = CreateGradientButton(coinsArea.transform, "PlusBtn", "+", new Vector2(60, 0), new Color(0.20f, 0.60f, 0.35f), new Color(0.10f, 0.40f, 0.22f), 34, 34, roundedMed, fontSize: 22);
+        plusBtn.GetComponent<RectTransform>().anchorMin = new Vector2(0.5f, 0.5f);
+        plusBtn.GetComponent<RectTransform>().anchorMax = new Vector2(0.5f, 0.5f);
+        plusBtn.GetComponent<RectTransform>().anchoredPosition = new Vector2(60, 0);
+        plusBtn.GetComponent<RectTransform>().sizeDelta = new Vector2(34, 34);
+        uiManager.plusButton = plusBtn.GetComponent<Button>();
 
         GameObject levelT = CreateText(topBar.transform, "LevelText", "LEVEL 1", 16, new Vector2(0, -10));
         levelT.GetComponent<TextMeshProUGUI>().fontStyle = FontStyles.Bold;
@@ -194,12 +552,17 @@ public class ProjectSetup : MonoBehaviour
         timerT.GetComponent<TextMeshProUGUI>().fontStyle = FontStyles.Bold;
 
         uiManager.levelText = levelT.GetComponent<TextMeshProUGUI>();
-        uiManager.scoreText = coinsT.GetComponent<TextMeshProUGUI>();
+
+        GameObject scoreT = CreateText(topBar.transform, "ScoreText", "Score: 0", 16, new Vector2(0, -42));
+        scoreT.GetComponent<TextMeshProUGUI>().color = new Color(1f, 0.85f, 0.4f);
+        scoreT.GetComponent<TextMeshProUGUI>().fontStyle = FontStyles.Bold;
+        uiManager.scoreText = scoreT.GetComponent<TextMeshProUGUI>();
+
         uiManager.timerText = timerT.GetComponent<TextMeshProUGUI>();
         uiManager.coinsText = coinsT.GetComponent<TextMeshProUGUI>();
         uiManager.heartsText = heartsT.GetComponent<TextMeshProUGUI>();
 
-        // Progress bar with rounded corners
+        // Progress bar
         GameObject progressBg = CreateRoundedPanel(canvas.transform, "ProgressBg", new Vector2(1000, 14), roundedSmall, darkBg);
         RectTransform pBgRect = progressBg.GetComponent<RectTransform>();
         pBgRect.anchorMin = new Vector2(0.5f, 1);
@@ -217,11 +580,11 @@ public class ProjectSetup : MonoBehaviour
         fillImg.sprite = roundedSmall;
         fillImg.type = Image.Type.Filled;
         fillImg.fillMethod = Image.FillMethod.Horizontal;
-        fillImg.fillAmount = 0.5f;
+        fillImg.fillAmount = 0f;
         fillImg.color = accentGreen;
         uiManager.progressBar = fillImg;
 
-        // Crossword area
+        // Crossword
         GameObject crosswordObj = new GameObject("CrosswordDisplay");
         crosswordObj.transform.SetParent(canvas.transform, false);
         RectTransform cwRect = crosswordObj.AddComponent<RectTransform>();
@@ -237,7 +600,7 @@ public class ProjectSetup : MonoBehaviour
         crossword.emptyTextColor = unfoundText;
         crossword.foundTextColor = Color.white;
 
-        // Word pill with rounded corners
+        // Word pill
         GameObject wordPillBg = CreateRoundedPanel(canvas.transform, "WordPillBg", new Vector2(340, 50), pill, pillBg);
         RectTransform wpRect = wordPillBg.GetComponent<RectTransform>();
         wpRect.anchorMin = new Vector2(0.5f, 0.43f);
@@ -264,7 +627,7 @@ public class ProjectSetup : MonoBehaviour
         wheel.wheelRadius = 150f;
         wheel.letterSize = 68f;
 
-        // Wheel background with gradient
+        // Wheel background
         GameObject wheelShadowOuter = new GameObject("WheelShadowOuter");
         wheelShadowOuter.transform.SetParent(wheelObj.transform, false);
         RectTransform wsoRect = wheelShadowOuter.AddComponent<RectTransform>();
@@ -299,7 +662,7 @@ public class ProjectSetup : MonoBehaviour
         wbiImg.color = new Color(0.04f, 0.22f, 0.30f, 0.5f);
         wheelBgInner.transform.SetAsFirstSibling();
 
-        // Buttons with gradient
+        // Buttons
         GameObject shuffleBtn = CreateGradientButton(canvas.transform, "ShuffleButton", "SHUFFLE", new Vector2(-280, 60), new Color(0.08f, 0.18f, 0.26f, 0.95f), new Color(0.04f, 0.10f, 0.16f, 0.95f), 150, 55, roundedMed, new Vector2(0.5f, 0.19f), new Vector2(0.5f, 0.19f), 16);
         GameObject hintBtn = CreateGradientButton(canvas.transform, "HintButton", "HINTS", new Vector2(280, 60), new Color(0.08f, 0.18f, 0.26f, 0.95f), new Color(0.04f, 0.10f, 0.16f, 0.95f), 150, 55, roundedMed, new Vector2(0.5f, 0.19f), new Vector2(0.5f, 0.19f), 16);
 
@@ -309,8 +672,9 @@ public class ProjectSetup : MonoBehaviour
 
         uiManager.hintButton = hintBtn.GetComponent<Button>();
         uiManager.shuffleButton = shuffleBtn.GetComponent<Button>();
+        uiManager.bonusButton = bonusBtn.GetComponent<Button>();
 
-        // Coin display with rounded corners
+        // Coin display bottom-right
         GameObject coinDisplay = CreateRoundedPanel(canvas.transform, "CoinDisplay", new Vector2(140, 45), roundedSmall, new Color(0.08f, 0.18f, 0.25f, 0.85f));
         RectTransform cdRect = coinDisplay.GetComponent<RectTransform>();
         cdRect.anchorMin = new Vector2(1, 0);
@@ -318,11 +682,12 @@ public class ProjectSetup : MonoBehaviour
         cdRect.anchoredPosition = new Vector2(-90, 50);
         cdRect.sizeDelta = new Vector2(140, 45);
 
-        GameObject coinLabel = CreateText(coinDisplay.transform, "CoinLabel", "\u25CF 140", 20, Vector2.zero);
+        GameObject coinLabel = CreateText(coinDisplay.transform, "CoinLabel", "\u25CF 0", 20, Vector2.zero);
         coinLabel.GetComponent<TextMeshProUGUI>().color = accentGold;
         coinLabel.GetComponent<TextMeshProUGUI>().fontStyle = FontStyles.Bold;
+        uiManager.coinDisplayText = coinLabel.GetComponent<TextMeshProUGUI>();
 
-        // Message panel with rounded corners
+        // Message panel
         GameObject messagePanel = CreateRoundedPanel(canvas.transform, "MessagePanel", new Vector2(500, 70), roundedMed, new Color(0.04f, 0.08f, 0.12f, 0.95f));
         RectTransform msgRect = messagePanel.GetComponent<RectTransform>();
         msgRect.anchorMin = new Vector2(0.5f, 0.5f);
@@ -332,7 +697,7 @@ public class ProjectSetup : MonoBehaviour
         uiManager.messageText = CreateText(messagePanel.transform, "MessageText", "", 24, Vector2.zero).GetComponent<TextMeshProUGUI>();
         messagePanel.SetActive(false);
 
-        // Level complete panel with rounded corners
+        // Level complete panel
         GameObject levelCompletePanel = CreateRoundedPanel(canvas.transform, "LevelCompletePanel", new Vector2(600, 450), roundedLarge, new Color(0.03f, 0.22f, 0.28f, 0.98f));
         RectTransform lcRect = levelCompletePanel.GetComponent<RectTransform>();
         lcRect.anchorMin = new Vector2(0.5f, 0.5f);
@@ -354,11 +719,16 @@ public class ProjectSetup : MonoBehaviour
         CreateText(levelCompletePanel.transform, "CompleteTitle", "LEVEL COMPLETE!", 38, new Vector2(0, 130));
         GameObject starsText = CreateText(levelCompletePanel.transform, "StarsText", "\u2605 \u2605 \u2605", 48, new Vector2(0, 60));
         starsText.GetComponent<TextMeshProUGUI>().color = accentGold;
-        CreateText(levelCompletePanel.transform, "CompleteScore", "Score: 0", 26, new Vector2(0, 0));
-        CreateText(levelCompletePanel.transform, "CompleteCoins", "+0 Coins", 26, new Vector2(0, -40));
+        GameObject completeScore = CreateText(levelCompletePanel.transform, "CompleteScore", "Score: 0", 26, new Vector2(0, 0));
+        GameObject completeCoins = CreateText(levelCompletePanel.transform, "CompleteCoins", "+0 Coins", 26, new Vector2(0, -40));
 
         GameObject continueBtn = CreateGradientButton(levelCompletePanel.transform, "ContinueButton", "CONTINUE", new Vector2(0, -120), accentGreen, new Color(0.18f, 0.60f, 0.28f), 280, 60, roundedMed);
         AddButtonShadow(continueBtn);
+        continueBtn.GetComponent<Button>().onClick.AddListener(() => GameManager.Instance.ContinueToNextLevel());
+        uiManager.continueButton = continueBtn.GetComponent<Button>();
+        uiManager.completeScoreText = completeScore.GetComponent<TextMeshProUGUI>();
+        uiManager.completeCoinsText = completeCoins.GetComponent<TextMeshProUGUI>();
+        uiManager.starsText = starsText.GetComponent<TextMeshProUGUI>();
 
         uiManager.levelCompletePanel = levelCompletePanel;
         levelCompletePanel.SetActive(false);
@@ -445,7 +815,6 @@ public class ProjectSetup : MonoBehaviour
         Image img = bg.AddComponent<Image>();
         img.color = color;
 
-        // Add subtle radial gradient overlay
         GameObject gradientOverlay = new GameObject("BackgroundGradient");
         gradientOverlay.transform.SetParent(bg.transform, false);
         RectTransform gRect = gradientOverlay.AddComponent<RectTransform>();
@@ -530,7 +899,6 @@ public class ProjectSetup : MonoBehaviour
         img.type = Image.Type.Sliced;
         img.color = topColor;
 
-        // Add gradient overlay
         GameObject gradientObj = new GameObject("Gradient");
         gradientObj.transform.SetParent(btnObj.transform, false);
         RectTransform gRect = gradientObj.AddComponent<RectTransform>();

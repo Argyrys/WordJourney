@@ -1,0 +1,56 @@
+[
+  {
+    "id": "com.wordjourney.removeads",
+    "title": "Remove Ads",
+    "description": "Remove all ads forever",
+    "type": "nonconsumable",
+    "price": "1.99",
+    "currency": "USD",
+    "reward": { "type": "removeads", "amount": 1 }
+  },
+  {
+    "id": "com.wordjourney.coins.small",
+    "title": "Starter Pack",
+    "description": "100 coins",
+    "type": "consumable",
+    "price": "0.99",
+    "currency": "USD",
+    "reward": { "type": "coins", "amount": 100 }
+  },
+  {
+    "id": "com.wordjourney.coins.medium",
+    "title": "Coin Bundle",
+    "description": "500 coins",
+    "type": "consumable",
+    "price": "2.99",
+    "currency": "USD",
+    "reward": { "type": "coins", "amount": 500 }
+  },
+  {
+    "id": "com.wordjourney.coins.large",
+    "title": "Mega Coin Pack",
+    "description": "1500 coins",
+    "type": "consumable",
+    "price": "5.99",
+    "currency": "USD",
+    "reward": { "type": "coins", "amount": 1500 }
+  },
+  {
+    "id": "com.wordjourney.hints.small",
+    "title": "Hint Pack",
+    "description": "5 hints",
+    "type": "consumable",
+    "price": "0.99",
+    "currency": "USD",
+    "reward": { "type": "hints", "amount": 5 }
+  },
+  {
+    "id": "com.wordjourney.hints.medium",
+    "title": "Mega Hint Pack",
+    "description": "15 hints",
+    "type": "consumable",
+    "price": "2.99",
+    "currency": "USD",
+    "reward": { "type": "hints", "amount": 15 }
+  }
+]

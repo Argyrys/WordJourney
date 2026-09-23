@@ -16,6 +16,11 @@ public class FontManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        ApplyFontToAll();
+    }
+
     public void ApplyFontToAll()
     {
         if (gameFont == null) return;

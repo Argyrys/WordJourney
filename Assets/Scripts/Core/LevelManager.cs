@@ -11,9 +11,12 @@ public class LevelManager : MonoBehaviour
 
     private LevelData currentLevelData;
     private List<string> foundWords = new List<string>();
+    private List<string> bonusWords = new List<string>();
+    private List<string> revealedBonusWords = new List<string>();
     private int currentScore = 0;
     private float timeRemaining;
     private bool isLevelActive = false;
+    private bool isLevelComplete = false;
 
     private void Awake()
     {
@@ -28,7 +31,14 @@ public class LevelManager : MonoBehaviour
 
     private void StartLevel()
     {
-        LoadLevel(levelNumber);
+        if (GameManager.Instance != null)
+        {
+            LoadLevel(GameManager.Instance.currentLevel);
+        }
+        else
+        {
+            LoadLevel(1);
+        }
     }
 
     private void Update()
@@ -37,7 +47,7 @@ public class LevelManager : MonoBehaviour
         {
             timeRemaining -= Time.deltaTime;
             UIManager.Instance?.UpdateTimer(timeRemaining);
-            UIManager.Instance?.UpdateProgress((float)foundWords.Count / currentLevelData.targetWords.Count);
+            UpdateProgressUI();
 
             if (timeRemaining <= 0)
             {
@@ -51,12 +61,21 @@ public class LevelManager : MonoBehaviour
         levelNumber = level;
         currentLevelData = GenerateLevelData(level);
         foundWords.Clear();
+        bonusWords.Clear();
+        revealedBonusWords.Clear();
         currentScore = 0;
         timeRemaining = timeLimit;
         isLevelActive = true;
+        isLevelComplete = false;
 
         UIManager.Instance?.UpdateLevelInfo(levelNumber, currentLevelData.targetWords.Count);
         WordValidator.Instance?.SetLevelWords(currentLevelData.targetWords);
+
+        if (WordValidator.Instance != null && currentLevelData.gridLetters != null)
+        {
+            bonusWords = WordValidator.Instance.FindBonusWords(currentLevelData.gridLetters, currentLevelData.targetWords, 3);
+            WordValidator.Instance.SetBonusWords(bonusWords);
+        }
 
         CircularLetterWheel.Instance?.SetupWheel(currentLevelData.gridLetters);
         CrosswordDisplay.Instance?.SetupWords(currentLevelData.targetWords);
@@ -71,29 +90,94 @@ public class LevelManager : MonoBehaviour
             currentScore += wordScore;
 
             UIManager.Instance?.WordFound(word, currentScore);
-            UIManager.Instance?.UpdateProgress((float)foundWords.Count / currentLevelData.targetWords.Count);
+            UpdateProgressUI();
             CrosswordDisplay.Instance?.OnWordFound(word);
 
-            if (foundWords.Count >= currentLevelData.targetWords.Count)
+            if (AllTargetsFound())
             {
                 EndLevel(true);
             }
         }
+        else if ((bonusWords.Contains(word) || revealedBonusWords.Contains(word)) && !foundWords.Contains(word))
+        {
+            foundWords.Add(word);
+            int wordScore = CalculateWordScore(word);
+            currentScore += wordScore;
+            int coinReward = word.Length * 2;
+
+            GameManager.Instance?.AddCoins(coinReward);
+            UIManager.Instance?.WordFound($"{word} (BONUS +{coinReward}\u00A2)", currentScore);
+            UpdateProgressUI();
+            UIManager.Instance?.UpdateCurrencyUI();
+        }
+    }
+
+    private bool AllTargetsFound()
+    {
+        if (currentLevelData == null) return false;
+        foreach (string word in currentLevelData.targetWords)
+        {
+            if (!foundWords.Contains(word))
+                return false;
+        }
+        return true;
+    }
+
+    public void RevealBonusWord()
+    {
+        if (currentLevelData == null || bonusWords.Count == 0)
+        {
+            UIManager.Instance?.ShowMessage("No bonus words yet!");
+            return;
+        }
+
+        foreach (string word in bonusWords)
+        {
+            if (!revealedBonusWords.Contains(word))
+            {
+                revealedBonusWords.Add(word);
+                WordFound(word);
+                CircularLetterWheel.Instance?.RevealWord(word);
+                break;
+            }
+        }
+    }
+
+    public int GetScore()
+    {
+        return currentScore;
+    }
+
+    private void UpdateProgressUI()
+    {
+        if (currentLevelData == null) return;
+        int targetWords = currentLevelData.targetWords.Count;
+        int targetFound = 0;
+        foreach (string word in foundWords)
+        {
+            if (currentLevelData.targetWords.Contains(word))
+                targetFound++;
+        }
+        UIManager.Instance?.UpdateProgress(targetWords > 0 ? targetFound / (float)targetWords : 0f);
     }
 
     public void UseHintForWord()
     {
-        if (GameManager.Instance.hints > 0)
+        if (GameManager.Instance == null) return;
+
+        if (!GameManager.Instance.UseHintIfAvailable())
         {
-            foreach (string word in currentLevelData.targetWords)
+            UIManager.Instance?.ShowMessage("No hints left!");
+            return;
+        }
+
+        foreach (string word in currentLevelData.targetWords)
+        {
+            if (!foundWords.Contains(word))
             {
-                if (!foundWords.Contains(word))
-                {
-                    GameManager.Instance.UseHint();
-                    WordFound(word);
-                    CircularLetterWheel.Instance?.RevealWord(word);
-                    break;
-                }
+                WordFound(word);
+                CircularLetterWheel.Instance?.RevealWord(word);
+                break;
             }
         }
     }
@@ -113,6 +197,11 @@ public class LevelManager : MonoBehaviour
         return foundWords;
     }
 
+    public List<string> GetBonusWords()
+    {
+        return bonusWords;
+    }
+
     private int CalculateWordScore(string word)
     {
         return word.Length * 10 + (word.Length > 4 ? (word.Length - 4) * 15 : 0);
@@ -120,14 +209,32 @@ public class LevelManager : MonoBehaviour
 
     private void EndLevel(bool success)
     {
+        if (isLevelComplete) return;
+        isLevelComplete = true;
         isLevelActive = false;
         int stars = CalculateStars();
-        GameManager.Instance.CompleteLevel(stars, currentScore);
+
+        if (success)
+        {
+            GameManager.Instance.CompleteLevel(stars, currentScore);
+        }
+        else
+        {
+            GameManager.Instance.LoseLife();
+            UIManager.Instance?.ShowMessage("Time's up!");
+            UIManager.Instance?.UpdateCurrencyUI();
+            Invoke(nameof(BackToMenu), 2f);
+        }
+    }
+
+    private void BackToMenu()
+    {
+        GameManager.Instance?.ReturnToMenu();
     }
 
     private int CalculateStars()
     {
-        if (foundWords.Count >= currentLevelData.targetWords.Count)
+        if (AllTargetsFound())
         {
             float timeBonus = timeRemaining / timeLimit;
             if (timeBonus > 0.5f) return 3;

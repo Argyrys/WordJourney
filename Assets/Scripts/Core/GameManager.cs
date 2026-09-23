@@ -59,7 +59,12 @@ public class GameManager : MonoBehaviour
         SaveLevelProgress(currentLevel, progress);
         SaveGameData();
 
-        UIManager.Instance?.ShowLevelComplete(starsEarned, coinsEarned);
+        UIManager.Instance?.ShowLevelComplete(starsEarned, coinsEarned, score);
+    }
+
+    public void ContinueToNextLevel()
+    {
+        StartLevel(currentLevel + 1);
     }
 
     public void UseHint()
@@ -69,6 +74,17 @@ public class GameManager : MonoBehaviour
             hints--;
             SaveGameData();
         }
+    }
+
+    public bool UseHintIfAvailable()
+    {
+        if (hints > 0)
+        {
+            hints--;
+            SaveGameData();
+            return true;
+        }
+        return false;
     }
 
     public void AddHints(int amount)

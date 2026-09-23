@@ -27,12 +27,117 @@ public class AudioManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            EnsureAudioSources();
+            GenerateProceduralClips();
             LoadAudioSettings();
         }
         else
         {
             Destroy(gameObject);
         }
+    }
+
+    private void EnsureAudioSources()
+    {
+        if (musicSource == null)
+        {
+            musicSource = gameObject.AddComponent<AudioSource>();
+            musicSource.loop = true;
+            musicSource.playOnAwake = false;
+        }
+        if (sfxSource == null)
+        {
+            sfxSource = gameObject.AddComponent<AudioSource>();
+            sfxSource.playOnAwake = false;
+        }
+    }
+
+    private void GenerateProceduralClips()
+    {
+        if (buttonClickClip == null)
+            buttonClickClip = GenerateToneClip(0.06f, 660f, 0.3f, true);
+        if (wordFoundClip == null)
+            wordFoundClip = GenerateMelodyClip(new float[] { 523.25f, 659.25f, 783.99f }, 0.09f, 0.35f);
+        if (levelCompleteClip == null)
+            levelCompleteClip = GenerateMelodyClip(new float[] { 523.25f, 659.25f, 783.99f, 1046.5f }, 0.14f, 0.4f);
+        if (errorClip == null)
+            errorClip = GenerateToneClip(0.18f, 200f, 0.3f, false);
+        if (shuffleClip == null)
+            shuffleClip = GenerateToneClip(0.12f, 400f, 0.25f, true);
+        if (musicClip == null)
+            musicClip = GenerateMusicClip();
+    }
+
+    private AudioClip GenerateMusicClip()
+    {
+        int sampleRate = 44100;
+        float duration = 8f;
+        int sampleCount = Mathf.CeilToInt(sampleRate * duration);
+        float[] samples = new float[sampleCount];
+
+        float[] notes = { 261.63f, 329.63f, 392.00f, 523.25f };
+        float[] vibratoFreq = { 0.4f, 0.3f, 0.5f, 0.35f };
+        float[] vibratoDepth = { 0.6f, 0.8f, 0.7f, 1.0f };
+
+        for (int i = 0; i < sampleCount; i++)
+        {
+            float time = (float)i / sampleRate;
+            float value = 0f;
+
+            for (int n = 0; n < notes.Length; n++)
+            {
+                float phase = Mathf.Repeat(time * vibratoFreq[n], 1f);
+                float env = 0.4f + 0.6f * Mathf.Sin(phase * Mathf.PI * 2f);
+                float freq = notes[n] * (1f + 0.05f * Mathf.Sin(time * 0.7f * (n + 1f)));
+                value += Mathf.Sin(2f * Mathf.PI * freq * time) * 0.07f * env * vibratoDepth[n];
+            }
+
+            samples[i] = Mathf.Clamp(value, -0.5f, 0.5f);
+        }
+
+        AudioClip clip = AudioClip.Create("Music", sampleCount, 1, sampleRate, false);
+        clip.SetData(samples, 0);
+        return clip;
+    }
+
+    private AudioClip GenerateToneClip(float duration, float frequency, float volume, bool decay)
+    {
+        int sampleRate = 44100;
+        int sampleCount = Mathf.CeilToInt(sampleRate * duration);
+        float[] samples = new float[sampleCount];
+
+        for (int i = 0; i < sampleCount; i++)
+        {
+            float t = (float)i / sampleRate;
+            float env = decay ? 1f - (t / duration) : 1f;
+            samples[i] = Mathf.Sin(2f * Mathf.PI * frequency * t) * volume * env;
+        }
+
+        AudioClip clip = AudioClip.Create("Tone", sampleCount, 1, sampleRate, false);
+        clip.SetData(samples, 0);
+        return clip;
+    }
+
+    private AudioClip GenerateMelodyClip(float[] frequencies, float noteDuration, float volume)
+    {
+        int sampleRate = 44100;
+        int noteSamples = Mathf.CeilToInt(sampleRate * noteDuration);
+        int totalSamples = noteSamples * frequencies.Length;
+        float[] samples = new float[totalSamples];
+
+        for (int n = 0; n < frequencies.Length; n++)
+        {
+            for (int i = 0; i < noteSamples; i++)
+            {
+                float t = (float)i / sampleRate;
+                float env = 1f - ((float)i / noteSamples);
+                samples[n * noteSamples + i] = Mathf.Sin(2f * Mathf.PI * frequencies[n] * t) * volume * env;
+            }
+        }
+
+        AudioClip clip = AudioClip.Create("Melody", totalSamples, 1, sampleRate, false);
+        clip.SetData(samples, 0);
+        return clip;
     }
 
     private void Start()

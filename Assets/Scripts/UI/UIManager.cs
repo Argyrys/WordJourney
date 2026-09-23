@@ -14,6 +14,7 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI coinsText;
     public TextMeshProUGUI currentWordText;
     public TextMeshProUGUI heartsText;
+    public TextMeshProUGUI coinDisplayText;
 
     [Header("Progress")]
     public Image progressBar;
@@ -23,6 +24,15 @@ public class UIManager : MonoBehaviour
     public Button submitButton;
     public Button hintButton;
     public Button shuffleButton;
+    public Button bonusButton;
+    public Button backButton;
+    public Button plusButton;
+    public Button continueButton;
+
+    [Header("Level Complete")]
+    public TextMeshProUGUI completeScoreText;
+    public TextMeshProUGUI completeCoinsText;
+    public TextMeshProUGUI starsText;
 
     [Header("Panels")]
     public GameObject levelCompletePanel;
@@ -45,6 +55,11 @@ public class UIManager : MonoBehaviour
         submitButton?.onClick.AddListener(() => {});
         hintButton?.onClick.AddListener(() => LevelManager.Instance?.UseHintForWord());
         shuffleButton?.onClick.AddListener(() => LevelManager.Instance?.ShuffleLetters());
+        bonusButton?.onClick.AddListener(() => LevelManager.Instance?.RevealBonusWord());
+        backButton?.onClick.AddListener(() => GameManager.Instance?.ReturnToMenu());
+        plusButton?.onClick.AddListener(() => GameManager.Instance?.ReturnToMenu());
+        continueButton?.onClick.AddListener(() => GameManager.Instance?.ContinueToNextLevel());
+        UpdateCurrencyUI();
     }
 
     public void UpdateLevelInfo(int level, int totalWords)
@@ -111,7 +126,10 @@ public class UIManager : MonoBehaviour
     {
         if (GameManager.Instance != null)
         {
-            coinsText.text = $"\u25C6 {GameManager.Instance.coins}";
+            if (coinsText != null)
+                coinsText.text = $"\u25C6 {GameManager.Instance.coins}";
+            if (coinDisplayText != null)
+                coinDisplayText.text = $"{GameManager.Instance.coins}";
             UpdateHearts();
         }
     }
@@ -136,9 +154,23 @@ public class UIManager : MonoBehaviour
         AudioManager.Instance?.PlayWordFound();
     }
 
-    public void ShowLevelComplete(int stars, int coinsEarned)
+    public void ShowLevelComplete(int stars, int coinsEarned, int score)
     {
-        levelCompletePanel.SetActive(true);
+        if (levelCompletePanel != null)
+            levelCompletePanel.SetActive(true);
+
+        if (completeScoreText != null)
+            completeScoreText.text = score.ToString();
+        if (completeCoinsText != null)
+            completeCoinsText.text = $"+{coinsEarned}";
+        if (starsText != null)
+        {
+            string starString = "";
+            for (int i = 0; i < 3; i++)
+                starString += i < stars ? "\u2605" : "\u2606";
+            starsText.text = starString;
+        }
+
         UpdateCurrencyUI();
         AudioManager.Instance?.PlayLevelComplete();
     }

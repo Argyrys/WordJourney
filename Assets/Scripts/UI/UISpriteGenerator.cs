@@ -134,6 +134,60 @@ public static class UISpriteGenerator
         return Sprite.Create(tex, new Rect(0, 0, width, height), new Vector2(0.5f, 0.5f), 100f);
     }
 
+    public static Sprite CreateStar(int size, Color color)
+    {
+        Texture2D tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+        tex.filterMode = FilterMode.Bilinear;
+
+        Color transparent = new Color(0, 0, 0, 0);
+        Color white = new Color(1, 1, 1, 1);
+        Color[] pixels = new Color[size * size];
+
+        Vector2 center = new Vector2(size / 2f, size / 2f);
+        float radius = size * 0.48f;
+        int spikes = 5;
+        float outerRadius = radius;
+        float innerRadius = radius * 0.42f;
+
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                Vector2 point = new Vector2(x + 0.5f, y + 0.5f);
+                if (IsInsideStar(point, center, outerRadius, innerRadius, spikes))
+                {
+                    pixels[y * size + x] = white;
+                }
+                else
+                {
+                    pixels[y * size + x] = transparent;
+                }
+            }
+        }
+
+        tex.SetPixels(pixels);
+        tex.Apply();
+
+        return Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), 100f);
+    }
+
+    private static bool IsInsideStar(Vector2 point, Vector2 center, float outerRadius, float innerRadius, int spikes)
+    {
+        float deltaX = point.x - center.x;
+        float deltaY = point.y - center.y;
+        float angle = Mathf.Atan2(deltaY, deltaX);
+        if (angle < 0) angle += Mathf.PI * 2f;
+
+        float angleStep = Mathf.PI * 2f / (spikes * 2f);
+        float spikeIndex = Mathf.Floor(angle / angleStep);
+        float angleInSpike = angle - spikeIndex * angleStep;
+        float ratioToCenter = 1f - Mathf.Abs(1f - (angleInSpike / angleStep) * 2f);
+        float radiusAtAngle = Mathf.Lerp(outerRadius, innerRadius, ratioToCenter);
+
+        float dist = Mathf.Sqrt(deltaX * deltaX + deltaY * deltaY);
+        return dist <= radiusAtAngle;
+    }
+
     public static Sprite CreateShadow(int width, int height, int radius, Color color, int spread = 4)
     {
         int size = Mathf.Max(width, height) + spread * 4;

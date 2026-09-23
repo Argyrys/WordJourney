@@ -8,6 +8,7 @@ public class WordValidator : MonoBehaviour
 
     private HashSet<string> validWords = new HashSet<string>();
     private HashSet<string> currentLevelWords = new HashSet<string>();
+    private HashSet<string> bonusWords = new HashSet<string>();
 
     private void Awake()
     {
@@ -63,6 +64,46 @@ public class WordValidator : MonoBehaviour
         }
 
         return foundWords;
+    }
+
+    public void SetBonusWords(List<string> words)
+    {
+        bonusWords.Clear();
+        foreach (string word in words)
+        {
+            bonusWords.Add(word.ToUpper());
+        }
+    }
+
+    public bool IsBonusWord(string word)
+    {
+        if (string.IsNullOrEmpty(word))
+            return false;
+        return bonusWords.Contains(word.ToUpper());
+    }
+
+    public List<string> FindBonusWords(char[] letters, List<string> excludeWords, int count)
+    {
+        List<string> found = new List<string>();
+        string letterString = new string(letters.Select(char.ToUpper).ToArray());
+        HashSet<string> excluded = new HashSet<string>();
+
+        foreach (string word in excludeWords)
+        {
+            excluded.Add(word.ToUpper());
+        }
+
+        foreach (string word in validWords)
+        {
+            if (found.Count >= count) break;
+            if (excluded.Contains(word) || bonusWords.Contains(word)) continue;
+            if (CanFormWord(word, letterString))
+            {
+                found.Add(word);
+            }
+        }
+
+        return found;
     }
 
     private bool CanFormWord(string word, string availableLetters)

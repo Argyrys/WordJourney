@@ -24,6 +24,7 @@ public class MenuManager : MonoBehaviour
     [Header("Level Select")]
     public Transform levelButtonParent;
     public GameObject levelButtonPrefab;
+    public TextMeshProUGUI pageText;
     public int levelsPerPage = 20;
     private int currentPage = 0;
 
@@ -52,7 +53,7 @@ public class MenuManager : MonoBehaviour
         {
             if (coinsText != null) coinsText.text = $"\u25C6 {GameManager.Instance.coins}";
             if (streakText != null) streakText.text = $"Streak: {GameManager.Instance.streak}";
-            if (highLevelText != null) highLevelText.text = $"Level {GameManager.Instance.GetMaxLevel() - 1}";
+            if (highLevelText != null) highLevelText.text = $"Level {GameManager.Instance.GetMaxLevel()}";
         }
     }
 
@@ -103,6 +104,12 @@ public class MenuManager : MonoBehaviour
         int startLevel = currentPage * levelsPerPage + 1;
         int endLevel = Mathf.Min(startLevel + levelsPerPage, 100);
 
+        if (pageText != null)
+        {
+            int maxPage = Mathf.CeilToInt(100f / levelsPerPage) - 1;
+            pageText.text = $"Page {currentPage + 1}/{maxPage + 1}";
+        }
+
         if (levelButtonPrefab == null) return;
 
         for (int i = startLevel; i <= endLevel; i++)
@@ -113,7 +120,7 @@ public class MenuManager : MonoBehaviour
             if (levelButton != null)
             {
                 LevelProgress progress = GameManager.Instance.GetLevelProgress(i);
-                levelButton.Setup(i, progress.stars, i < maxLevel);
+                levelButton.Setup(i, progress.stars, i <= maxLevel);
             }
         }
     }

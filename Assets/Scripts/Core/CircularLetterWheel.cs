@@ -254,7 +254,11 @@ public class CircularLetterWheel : MonoBehaviour, IPointerDownHandler, IDragHand
             if (WordValidator.Instance.IsTargetWord(currentWord))
             {
                 LevelManager.Instance.WordFound(currentWord);
-                AudioManager.Instance?.PlayWordFound();
+            }
+            else if (WordValidator.Instance.IsBonusWord(currentWord))
+            {
+                LevelManager.Instance.WordFound(currentWord);
+                UIManager.Instance?.ShowMessage($"Bonus word: {currentWord.ToUpper()}!");
             }
             else
             {

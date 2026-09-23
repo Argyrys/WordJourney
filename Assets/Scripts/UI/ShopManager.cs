@@ -26,6 +26,13 @@ public class ShopManager : MonoBehaviour
     [Header("Status")]
     public GameObject adsRemovedBadge;
     public TextMeshProUGUI statusText;
+    public TextMeshProUGUI coinsBalanceText;
+
+    private void OnEnable()
+    {
+        UpdatePrices();
+        UpdateStatus();
+    }
 
     private void Start()
     {
@@ -64,6 +71,10 @@ public class ShopManager : MonoBehaviour
             bool adsRemoved = PlayerPrefs.GetInt("AdsRemoved", 0) == 1;
             adsRemovedBadge.SetActive(adsRemoved);
             removeAdsButton.interactable = !adsRemoved;
+        }
+        if (coinsBalanceText != null && GameManager.Instance != null)
+        {
+            coinsBalanceText.text = $"\u25CF {GameManager.Instance.coins}";
         }
     }
 
